@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 //import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-import com.tmobile.converter.UserToCustomerEntryDTOConverter;
+import com.tmobile.converter.ContractToContractEntryDTOConverter;
 
 import org.modelmapper.ModelMapper;
 
@@ -45,7 +45,7 @@ public class AppConfig implements WebMvcConfigurer {
 	public ModelMapper createModelMapper() {
 //		return new ModelMapper();
 		ModelMapper mapper = new ModelMapper();
-		mapper.addConverter(new UserToCustomerEntryDTOConverter());
+		mapper.addConverter(new ContractToContractEntryDTOConverter());
 		mapper.addConverter(new TariffOptionsToOptionDTOConverter());
 
 		return mapper;

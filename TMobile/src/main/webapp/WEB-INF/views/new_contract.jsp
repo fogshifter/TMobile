@@ -5,24 +5,18 @@
 <!-- Custom styles for this template -->
 <!--<link href="form-validation.css" rel="stylesheet">-->
 
-  <!--<body class="bg-light">-->
-
-<%--<div class="container">--%>
 <div class = "row">
     <h4 class = "col-md-4">Customer info</h4>
-    <!--<h4 class = "col-md-4">Tariff</h4>
-    <h4 class = "col-md-4">Options</h4>-->
-
 </div>
-<%--<form class="needs-validation" novalidate>--%>
-<form method="POST" onsubmit="javascript:void(0);" id="contractData" class="needs-validation" novalidate>
+
+<%--<form method="POST" onsubmit="javascript:void(0);" id="contractData" class="needs-validation" novalidate>--%>
+<form method="POST" action="<jstl:url value="/manager/register_contract"/>" id="contractData" class="needs-validation" novalidate>
 <div class="row">
     <div class="col-md-7 order-md-1">
-    <%--<form class="needs-validation" novalidate>--%>
         <div class="form-group row">
             <label for="firstName" class="col-3 col-form-label">First name</label>
             <div class="col-9">
-                <input class="form-control" type="text" id="firstName" name="firstName" placeholder="" value="" required>
+                <input class="form-control" type="text" id="firstName" name="firstName" placeholder="" value="${contractInfo.firstName}" required>
                 <div class="invalid-feedback">
                     First name is required.
                 </div>
@@ -31,7 +25,7 @@
         <div class="form-group row">
             <label for="lastName" class="col-3 col-form-label">Last name</label>
             <div class="col-9">
-                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="" required>
+                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="" value="${contractInfo.lastName}" required>
                 <div class="invalid-feedback">
                   Last name is required.
                 </div>
@@ -40,7 +34,7 @@
         <div class="form-group row">
           <label for="birth_date" class="col-3 col-form-label">Date of birth</label>
           <div class="col-9">
-              <input type="date" class="form-control" id="birth_date" name="birthDate" placeholder="" value="" required>
+              <input type="date" class="form-control" id="birth_date" name="birthDate" placeholder="" value="${contractInfo.birthDate}" required>
               <div class="invalid-feedback">
                 Valid date of birth is required.
               </div>
@@ -49,7 +43,7 @@
         <div class="form-group row">
           <label for="email" class="col-3 col-form-label">Email</label>
             <div class="col-9">
-                <input type="email" class="form-control" id="email" name="email" placeholder="customer@mail.com" required>
+                <input type="email" class="form-control" id="email" name="email" value="${contractInfo.email}" placeholder="customer@mail.com" required>
                 <div class="invalid-feedback">
                   Please enter a valid email address.
                 </div>
@@ -58,7 +52,7 @@
         <div class="form-group row">
           <label for="password" class="col-3 col-form-label">Password</label>
           <div class="col-9">
-            <input type="password" class="form-control" id="password" name="password" placeholder="" value="" required>
+            <input type="password" class="form-control" id="password" name="password" placeholder="" value="${contractInfo.password}" required>
             <div class="invalid-feedback">
               Password is required.
             </div>
@@ -67,7 +61,7 @@
         <div class="form-group row">
             <label for="address" class="col-3 col-form-label">Passport Data</label>
             <div class="col-9">
-                <input type="text" class="form-control" id="passportData" name="passportData" placeholder="33631234 Pass number" required>
+                <input type="text" class="form-control" id="passportData" name="passportData" value="${contractInfo.passportData}" placeholder="33631234 Pass number" required>
                 <div class="invalid-feedback">
                     Passport data is required.
                 </div>
@@ -76,17 +70,14 @@
         <div class="form-group row">
           <label for="address" class="col-3 col-form-label">Address</label>
           <div class="col-9">
-              <input type="text" class="form-control" id="address" name="address" placeholder="1234 Main St" required>
+              <input type="text" class="form-control" id="address" name="address" value="${contractInfo.address}" placeholder="1234 Main St" required>
               <div class="invalid-feedback">
                 Please enter customer address.
               </div>
           </div>
         </div>
-
-      <%--</form>--%>
     </div>
 
-    <%--<div class="col-md-5 order-md-2" id="tariffs_accordion">--%>
     <div class="col-md-5 order-md-2" id="contract_accordion">
 
         <ul class="nav nav-tabs">
@@ -97,7 +88,7 @@
               <a class="nav-link" data-toggle="tab" href="#options">Options</a>
           </li>
         </ul>
-        <div id="myTabContent" class="tab-content pre-scrollable" style="height: 260px">
+        <div id="myTabContent" class="tab-content pre-scrollable" style="height: 315px">
           <div class="tab-pane fade active show" id="tariffs">
               <jstl:forEach var="tariff" items="${tariffs}">
 
@@ -173,6 +164,7 @@
               </jstl:forEach>
           </div>
         </div>
+        <%--<button class="btn btn-primary btn-lg btn-block mt-5" type="button" onclick="register()">Register</button>--%>
         <button class="btn btn-primary btn-lg btn-block mt-5" type="button" onclick="register()">Register</button>
     </div>
 </div>
@@ -210,34 +202,15 @@
 
 <script>
 
-    $(function () {
-        var token = $("meta[name='_csrf']").attr("content");
-        var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function(e, xhr, options) {
-            xhr.setRequestHeader(header, token);
-        });
-    });
-
     function register() {
-        contractData = $('#contractData').serialize()
-
-        $.post({
-            // dataType: 'json',
-            data : contractData,
-            url : '<jstl:url value="/manager/register_contract"/>'
-        })
+        form = $('#contractData')
+        sendForm(form, form.attr('action'))
     }
 
-    $('#email').change(function(){
-        var email = $(this).val();
-        $.get({
-            dataType: 'json',
-            data : {'email': email},
-            url : '<jstl:url value="/contract/check_email_uniqueness"/>',
-            // http://localhost:8080/TMobile/contract/check_email_uniqueness/',
-            success : function(response, textStatus) {
-            console.log(response)
-            }
-        })
+    $('#contractData :input').change(function() {
+
+        var url = '<jstl:url value="/manager/sync_new_contract_info/"/>'
+        sendForm($('#contractData'), url)
     })
+
 </script>

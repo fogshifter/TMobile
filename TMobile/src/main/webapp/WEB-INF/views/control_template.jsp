@@ -6,11 +6,11 @@
 
 <jstl:choose>
     <jstl:when test="${page == 'CONTRACTS'}">
-        <jstl:set var="page_url" value="customers_list.jsp"/>
-        <jstl:set var="page_title" value="Customers list"/>
+        <jstl:set var="page_url" value="contracts_list.jsp"/>
+        <jstl:set var="page_title" value="Contracts list"/>
     </jstl:when>
     <jstl:when test="${page == 'EDIT_CONTRACT'}">
-        <jstl:set var="page_url" value="contract_profile.jsp"/>
+        <jstl:set var="page_url" value="edit_contract.jsp"/>
         <jstl:set var="page_title" value="Contract profile"/>
     </jstl:when>
     <jstl:when test="${page == 'NEW_CONTRACT'}">
@@ -86,33 +86,35 @@
                                     Contracts
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link
-                                  <jstl:if test="${page == 'NEW_CONTRACT'}">
-                                    active
-                                  </jstl:if>" href="<jstl:url value="/manager/new_contract"/>">
-                                    <span data-feather="users"></span>
-                                    New contract
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link
-                                  <jstl:if test="${page == 'TARIFFS'}">
-                                    active
-                                  </jstl:if>" href="<jstl:url value="/manager/tariffs"/>">
-                                    <span data-feather="file"></span>
-                                    Tariffs
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link
-                                  <jstl:if test="${page == 'OPTIONS'}">
-                                    active
-                                  </jstl:if>" href="<jstl:url value="/manager/options"/>">
-                                    <span data-feather="shopping-cart"></span>
-                                    Options
-                                </a>
-                            </li>
+                            <jstl:if test="${user == 'MANAGER'}">
+                                <li class="nav-item">
+                                    <a class="nav-link
+                                      <jstl:if test="${page == 'NEW_CONTRACT'}">
+                                        active
+                                      </jstl:if>" href="<jstl:url value="/manager/new_contract"/>">
+                                        <span data-feather="users"></span>
+                                        New contract
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link
+                                      <jstl:if test="${page == 'TARIFFS'}">
+                                        active
+                                      </jstl:if>" href="<jstl:url value="/manager/tariffs"/>">
+                                        <span data-feather="file"></span>
+                                        Tariffs
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link
+                                      <jstl:if test="${page == 'OPTIONS'}">
+                                        active
+                                      </jstl:if>" href="<jstl:url value="/manager/options"/>">
+                                        <span data-feather="shopping-cart"></span>
+                                        Options
+                                    </a>
+                                </li>
+                            </jstl:if>
                         </ul>
                     </div>
                 </nav>

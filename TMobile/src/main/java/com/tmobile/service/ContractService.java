@@ -1,34 +1,40 @@
 package com.tmobile.service;
 
+import com.tmobile.dao.ContractDAO;
 import com.tmobile.dao.OptionDAO;
 import com.tmobile.dao.TariffDAO;
 import com.tmobile.dao.UserDAO;
 import com.tmobile.dto.ContractInfoDTO;
-import com.tmobile.entity.Contract;
-import com.tmobile.entity.User;
+import com.tmobile.dto.ContractsListEntryDTO;
+import com.tmobile.entity.*;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ContractService {
 
     private PasswordEncoder encoder;
     private UserDAO userDAO;
+    private ContractDAO contractDAO;
     private TariffDAO tariffDAO;
     private OptionDAO optionDAO;
     private ModelMapper mapper;
 
     @Autowired
-    public ContractService(PasswordEncoder encoder, UserDAO userDAO, TariffDAO tariffDAO, OptionDAO optionDAO, ModelMapper mapper) {
+    public ContractService(PasswordEncoder encoder, UserDAO userDAO, ContractDAO contractDAO, TariffDAO tariffDAO, OptionDAO optionDAO, ModelMapper mapper) {
         this.encoder = encoder;
         this.userDAO = userDAO;
+        this.contractDAO = contractDAO;
         this.tariffDAO = tariffDAO;
         this.optionDAO = optionDAO;
         this.mapper = mapper;
@@ -37,8 +43,7 @@ public class ContractService {
     @Transactional
     public void registerContract(ContractInfoDTO contractInfo) {
         User user = new User();
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MM yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
 
         try {
             Date date = formatter.parse(contractInfo.getBirthDate());
@@ -70,9 +75,8 @@ public class ContractService {
         for(Integer optionId : contractInfo.getOptionIds()) {
             contract.addOption(optionDAO.find(optionId));
         }
-//        contract.setPhone(contractInfo.getPhone());
-
         user.addContract(contract);
+        contract.setCustomer(user);
 
         if(user.getId() != 0) {
             userDAO.update(user);
@@ -80,5 +84,35 @@ public class ContractService {
         else {
             userDAO.insert(user);
         }
+    }
+
+    @Transactional
+    public ContractInfoDTO getDefaultContractInfo() {
+        ContractInfoDTO contractInfo = new ContractInfoDTO();
+
+        Tariff tariff = tariffDAO.getDefaultTariff();
+        contractInfo.setTariffId(tariff.getId());
+
+        for(TariffOptions option: tariff.getDefaultOptions()) {
+            contractInfo.addOptionId(option.getOption().getId());
+        }
+        return contractInfo;
+    }
+
+
+    @Transactional
+	public List<ContractsListEntryDTO> getAllContracts() {
+		List<Contract> contracts = contractDAO.getAll();
+
+		Type targetListType = new TypeToken<List<ContractsListEntryDTO>>() {}.getType();
+		return mapper.map(contracts, targetListType);
+	}
+
+    @Transactional
+    public List<ContractsListEntryDTO> getCustomerContracts(int customerId) {
+        List<Contract> customerContracts = contractDAO.getCustomerContracts(customerId);
+
+        Type targetListType = new TypeToken<List<ContractsListEntryDTO>>() {}.getType();
+        return mapper.map(customerContracts, targetListType);
     }
 }

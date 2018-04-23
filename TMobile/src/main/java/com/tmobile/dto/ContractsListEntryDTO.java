@@ -1,18 +1,23 @@
 package com.tmobile.dto;
 
-import java.util.ArrayList;
-import java.util.List;
 
-public class CustomersListEntryDTO {
+public class ContractsListEntryDTO {
 
 	private int id;
 	private String firstName;
 	private String lastName;
 	private String email;
-    private String birthDate;
+	private String tariff;
+	private String phone;
 
-	private List<String> phones = new ArrayList<>();
-	
+    public String getTariff() {
+        return tariff;
+    }
+
+    public void setTariff(String tariff) {
+        this.tariff = tariff;
+    }
+
 	public int getId() {
 		return id;
 	}
@@ -20,21 +25,14 @@ public class CustomersListEntryDTO {
 		this.id = id;
 	}
 
-    public String getBirthDate() {
-        return birthDate;
+	public String getPhone() {
+        return phone;
+	}
+
+	public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
-    }
-	
-	public List<String> getPhones() {
-		return phones;
-	}
-	public void addPhone(String phone) {
-		phones.add(phone);
-	}
-	
 	public String getFirstName() {
 		return firstName;
 	}

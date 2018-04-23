@@ -10,23 +10,23 @@
             </th>
             <th scope="col">First name</th>
             <th scope="col">Last name</th>
-            <th scope="col">Birth Date</th>
             <th scope="col">Email</th>
+            <th scope="col">Tariff</th>
         </tr>
     </thead>
     <tbody>
 
-    <jstl:forEach var="customer" items="${customers}">
-        <jstl:forEach var="phone" items="${customer.phones}">
+    <jstl:forEach var="contract" items="${contracts}">
+        <%--<jstl:forEach var="phone" items="${contract.phones}">--%>
             <!--<tr id="${customer.id}">-->
-            <tr data-href="<jstl:url value="/manager/contract/${customer.id}"/>">
-                <td>${phone}</td>
-                <td>${customer.firstName}</td>
-                <td>${customer.lastName}</td>
-                <td>${customer.birthDate}</td>
-                <td>${customer.email}</td>
-            </tr>
-        </jstl:forEach>
+        <tr data-href="<jstl:url value="/manager/contract/${contract.id}"/>">
+            <td>${contract.phone}</td>
+            <td>${contract.firstName}</td>
+            <td>${contract.lastName}</td>
+            <td>${contract.email}</td>
+            <td>${contract.tariff}</td>
+        </tr>
+        <%--</jstl:forEach>--%>
     </jstl:forEach>
     </tbody>
 </table>

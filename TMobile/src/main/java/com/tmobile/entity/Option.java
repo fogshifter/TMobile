@@ -21,6 +21,7 @@ public class Option {
 	boolean compatible;
 
 	private List<TariffOptions> compatibleTariffs = new ArrayList<>();
+//	private List<OptionOptions> compatibleOptions =
 
 	@OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<TariffOptions> getCompatibleTariffs() {
@@ -30,6 +31,9 @@ public class Option {
     public void setCompatibleTariffs(List<TariffOptions> tariffOptions) {
 	    this.compatibleTariffs = tariffOptions;
     }
+
+//    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+//    public List
 
     @Id
 	@Column(name = "id")

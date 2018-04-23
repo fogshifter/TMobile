@@ -1,6 +1,7 @@
 package com.tmobile.controller;
 
 import com.tmobile.auth.ProviderUserDetails;
+import com.tmobile.service.ContractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -9,31 +10,32 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.tmobile.dto.ProfileDTO;
-import com.tmobile.service.UserService;
 
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
 	
-	private UserService userService;
+//	private UserService userService;
+	private ContractService contractService;
 	
 	@Autowired
-	public CustomerController(UserService service) {
-		this.userService = service;
+	public CustomerController(ContractService contractService) {
+	    this.contractService = contractService;
 	}
 	
-	@GetMapping("/{customerId}")
+	@GetMapping//("/{customerId}")
 //	public ModelAndView getProfile(@PathVariable int customerId) {
     public ModelAndView getProfile() {
 
         ProviderUserDetails userDetails = (ProviderUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	
 //		ProfileDTO profile = userService.getCustomerProfile(customerId);
-        ProfileDTO profile = userService.getCustomerProfile(userDetails.getUserId());
+//        ProfileDTO profile = userService.getCustomerProfile(userDetails.getUserId());
 		
-		ModelAndView view = new ModelAndView("profile");		
-		view.addObject("profile", profile);
+		ModelAndView view = new ModelAndView("control_template");
+		view.addObject("page", "CONTRACTS");
+		view.addObject("user", "CUSTOMER");
+		view.addObject("contracts", contractService.getCustomerContracts(userDetails.getUserId()));
 		return view;
 	}
 }

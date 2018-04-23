@@ -4,14 +4,14 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+//@Component
+//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ContractInfoDTO {
     private int customerId;
     private int tariffId;
-    private List<Integer> optionIds;
     private String firstName;
     private String lastName;
     private String birthDate;
@@ -20,6 +20,9 @@ public class ContractInfoDTO {
     private String phone;
     private String password;
     private String passportData;
+    private List<Integer> optionIds = new ArrayList<>();
+
+    public ContractInfoDTO() {}
 
     public int getCustomerId() {
         return customerId;
@@ -43,6 +46,10 @@ public class ContractInfoDTO {
 
     public void setOptionIds(List<Integer> optionIds) {
         this.optionIds = optionIds;
+    }
+
+    public void addOptionId(Integer id) {
+        optionIds.add(id);
     }
 
     public String getFirstName() {

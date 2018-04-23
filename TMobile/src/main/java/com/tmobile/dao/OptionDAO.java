@@ -16,4 +16,6 @@ public class OptionDAO extends GenericDAO<Option> {
     public Option find(int id) {
         return entityManager.find(Option.class, id);
     }
+
+
 }

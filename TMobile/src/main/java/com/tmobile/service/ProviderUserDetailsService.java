@@ -1,9 +1,6 @@
 package com.tmobile.service;
 
 import javax.transaction.Transactional;
-
-//import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,13 +13,11 @@ import com.tmobile.entity.User;
 
 @Service
 public class ProviderUserDetailsService implements UserDetailsService {
-	
-//	private CustomerDAO customerDAO;
-//	private ManagerDAO managerDAO;
+
 	private UserDAO userDAO;
 	
 	@Autowired
-//	public ProviderUserDetailsService(CustomerDAO customerDAO, ManagerDAO managerDAO) {
+
 	public ProviderUserDetailsService(UserDAO userDAO) {
 		super();
 //		this.customerDAO = customerDAO;
@@ -31,12 +26,9 @@ public class ProviderUserDetailsService implements UserDetailsService {
 	}
 
 	@Override
-	@Transactional//(readonly = true)
+	@Transactional
 	public UserDetails loadUserByUsername(String email)
 			throws UsernameNotFoundException {
-		
-		/*Customer customer = customerDAO.findByEmail(email);
-		Manager manager = managerDAO.findByEmail(email);*/
 		
 		User user = userDAO.findByEmail(email);
 		
@@ -44,7 +36,6 @@ public class ProviderUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException(email);
 		}
 		
-//		return new CustomerDetails(customer);
 		return new ProviderUserDetails(user);
 	}
 }	
