@@ -23,13 +23,15 @@ DROP TABLE IF EXISTS `contract`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contract` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `p_number` varchar(20) NOT NULL,
-  `customer_id` int(11) NOT NULL,
-  `blocked` int(11) DEFAULT '0',
+  `id` int(11) NOT NULL,
+  `p_number` varchar(255) DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `tariff_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `customer_id` (`customer_id`),
-  CONSTRAINT `contract_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE
+  KEY `FKj6fluygwv28m5ra2sj703c61w` (`customer_id`),
+  KEY `FKr9ow9rvoc733hmd7wfglmft3g` (`tariff_id`),
+  CONSTRAINT `FKj6fluygwv28m5ra2sj703c61w` FOREIGN KEY (`customer_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `FKr9ow9rvoc733hmd7wfglmft3g` FOREIGN KEY (`tariff_id`) REFERENCES `tariff` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,48 +43,12 @@ DROP TABLE IF EXISTS `contract_options`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contract_options` (
-  `contract_id` int(11) NOT NULL,
-  `option_id` int(11) NOT NULL,
-  KEY `contract_id` (`contract_id`),
-  KEY `option_id` (`option_id`),
-  CONSTRAINT `contract_options_ibfk_1` FOREIGN KEY (`contract_id`) REFERENCES `contract` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `contract_options_ibfk_2` FOREIGN KEY (`option_id`) REFERENCES `t_option` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `customer`
---
-
-DROP TABLE IF EXISTS `customer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `customer` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(256) NOT NULL,
-  `last_name` varchar(256) NOT NULL,
-  `birth_date` date NOT NULL,
-  `password` varchar(64) NOT NULL,
-  `address` text NOT NULL,
-  `email` varchar(256) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `options_compat`
---
-
-DROP TABLE IF EXISTS `options_compat`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `options_compat` (
-  `option_id` int(11) NOT NULL,
-  `compat_option_id` int(11) NOT NULL,
-  KEY `option_id` (`option_id`),
-  KEY `compat_option_id` (`compat_option_id`),
-  CONSTRAINT `options_compat_ibfk_1` FOREIGN KEY (`option_id`) REFERENCES `t_option` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `options_compat_ibfk_2` FOREIGN KEY (`compat_option_id`) REFERENCES `t_option` (`id`) ON DELETE CASCADE
+  `Contract_id` int(11) NOT NULL,
+  `options_id` int(11) NOT NULL,
+  KEY `FKdkigbvyfkmr69bhdk14xgi5b` (`options_id`),
+  KEY `FK37peinimwve8g24934lmwhdby` (`Contract_id`),
+  CONSTRAINT `FK37peinimwve8g24934lmwhdby` FOREIGN KEY (`Contract_id`) REFERENCES `contract` (`id`),
+  CONSTRAINT `FKdkigbvyfkmr69bhdk14xgi5b` FOREIGN KEY (`options_id`) REFERENCES `t_option` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -94,10 +60,12 @@ DROP TABLE IF EXISTS `t_option`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_option` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `payment` int(11) DEFAULT '0',
-  `cost` int(11) DEFAULT '0',
-  `compatible` tinyint(1) DEFAULT '1',
+  `id` int(11) NOT NULL,
+  `compatible` tinyint(1) NOT NULL DEFAULT '1',
+  `payment` int(11) DEFAULT NULL,
+  `price` int(11) DEFAULT NULL,
+  `description` text NOT NULL,
+  `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -110,9 +78,11 @@ DROP TABLE IF EXISTS `tariff`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tariff` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(256) NOT NULL,
-  `cost` int(11) DEFAULT '0',
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `price` int(11) DEFAULT NULL,
+  `description` text NOT NULL,
+  `default_flag` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -127,10 +97,33 @@ DROP TABLE IF EXISTS `tariff_options`;
 CREATE TABLE `tariff_options` (
   `tariff_id` int(11) NOT NULL,
   `option_id` int(11) NOT NULL,
+  PRIMARY KEY (`tariff_id`,`option_id`),
   KEY `tariff_id` (`tariff_id`),
   KEY `option_id` (`option_id`),
   CONSTRAINT `tariff_options_ibfk_1` FOREIGN KEY (`tariff_id`) REFERENCES `tariff` (`id`) ON DELETE CASCADE,
   CONSTRAINT `tariff_options_ibfk_2` FOREIGN KEY (`option_id`) REFERENCES `t_option` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `birth_date` datetime(6) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `role` varchar(255) DEFAULT 'CUSTOMER',
+  `passport_data` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_ob8kqyqqgmefl0aco34akdtpe` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -143,4 +136,4 @@ CREATE TABLE `tariff_options` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-27 19:42:54
+-- Dump completed on 2018-04-23  5:12:45

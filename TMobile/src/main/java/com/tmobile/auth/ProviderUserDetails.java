@@ -30,33 +30,37 @@ public class ProviderUserDetails implements UserDetails {
 		return roles;
 	}
 
+	public int getUserId() {
+	    return user.getId();
+    }
+
 	@Override
 	public String getPassword() {
-		return user.getPassword();
+	    return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return user.getEmail();
+	    return user.getEmail();
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+	    return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+	    return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+	    return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+	    return true;
 	}
 }

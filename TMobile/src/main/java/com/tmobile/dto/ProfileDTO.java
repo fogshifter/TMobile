@@ -6,7 +6,9 @@ import java.util.Map;
 
 public class ProfileDTO {
 
-	private String customerName;
+//	private String customerName;
+	private String firstName;
+	private String lastName;
 	private String email;
 	private String number;
 	private String price;
@@ -28,13 +30,13 @@ public class ProfileDTO {
 		options.put(option, price);
 	}
 
-	public String getCustomerName() {
+/*	public String getCustomerName() {
 		return customerName;
 	}
 	
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
-	}
+	}*/
 	
 	public String getEmail() {
 		return email;

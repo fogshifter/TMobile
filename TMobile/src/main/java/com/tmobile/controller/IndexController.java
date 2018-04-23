@@ -1,14 +1,8 @@
 package com.tmobile.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.tmobile.dao.UserDAO;
-import com.tmobile.entity.User;
-import com.tmobile.service.CustomerService;
 
 @Controller
 @RequestMapping("/")

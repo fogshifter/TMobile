@@ -15,7 +15,8 @@
     <title>Signin T-mobile</title>
 
     <!-- Bootstrap core CSS -->
-   <link href="<jstl:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet">
+   <%--<link href="<jstl:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet">--%>
+    <jstl:import url="resources.jsp"></jstl:import>
 
     <!-- Custom styles for this template -->
     <link href="<jstl:url value="/resources/css/signin.css"/>" rel="stylesheet">

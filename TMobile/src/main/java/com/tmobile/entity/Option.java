@@ -1,12 +1,13 @@
 package com.tmobile.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "t_option")
@@ -15,9 +16,22 @@ public class Option {
 	private int id;
 	private int payment;
 	private int price;
+	private String name;
+	private String description;
 	boolean compatible;
-	
-	@Id
+
+	private List<TariffOptions> compatibleTariffs = new ArrayList<>();
+
+	@OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<TariffOptions> getCompatibleTariffs() {
+        return compatibleTariffs;
+    }
+
+    public void setCompatibleTariffs(List<TariffOptions> tariffOptions) {
+	    this.compatibleTariffs = tariffOptions;
+    }
+
+    @Id
 	@Column(name = "id")
 	@GeneratedValue(generator = "increment")
 	@GenericGenerator(name = "increment", strategy = "increment")
@@ -51,4 +65,41 @@ public class Option {
 	public void setCompatible(boolean compatible) {
 		this.compatible = compatible;
 	}
+
+	@Column(name = "name")
+    public String getName() {
+	    return name;
+    }
+
+    public void setName(String name) {
+	    this.name = name;
+    }
+
+	@Column(name = "description")
+    @Type(type = "text")
+    public String getDescription() {
+	    return description;
+    }
+
+    public void setDescription(String desc) {
+	    this.description = desc;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Option option = (Option) o;
+        return id == option.id &&
+                payment == option.payment &&
+                price == option.price &&
+                compatible == option.compatible &&
+                Objects.equals(description, option.description);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, payment, price, compatible, description);
+    }
 }

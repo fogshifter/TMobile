@@ -22,7 +22,6 @@ public class Contract {
 
 	private int id;
 	private String phone;
-	private int price;
 
 	private User customer;
 	
@@ -33,9 +32,8 @@ public class Contract {
 	public Contract() {
 	}
 	
-	public Contract(String phone, int price) {
+	public Contract(String phone) {
 		this.phone = phone;
-		this.price = price;
 	}
 	
 	@Id
@@ -90,14 +88,6 @@ public class Contract {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
-	}
-	
-	@Column(name = "price")
-	public int getPrice() {
-		return price;
-	}
-	public void setPrice(int price) {
-		this.price = price;
 	}
 	
 }

@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user")
@@ -28,10 +29,11 @@ public class User {
 	private String address;
 	private String email;
 	private String role;
-	
-	
+    private String passportData;
+
+
 	private List<Contract> contracts = new ArrayList<>();
-	
+
 	public User() {
 	}
 	
@@ -51,7 +53,10 @@ public class User {
 	public void setContracts(List<Contract> contracts) {
 		this.contracts = contracts;
 	}
-	
+
+	public void addContract(Contract contract) {
+	    this.contracts.add(contract);
+    }
 	/*
 	public void addContract(Contract contract) {
 		contracts.add(contract);
@@ -65,7 +70,7 @@ public class User {
 		return id;
 	}
 	
-	private void setId(int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	
@@ -133,4 +138,14 @@ public class User {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	@Column(name = "passport_data")
+    @Type(type = "text")
+    public String getPassportData() {
+        return passportData;
+    }
+
+    public void setPassportData(String passportData) {
+        this.passportData = passportData;
+    }
 }

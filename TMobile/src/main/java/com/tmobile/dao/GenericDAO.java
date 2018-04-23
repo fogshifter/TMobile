@@ -18,7 +18,7 @@ public abstract class GenericDAO<T> {
 	}
 	
 	public void update(T entity) {
-		entityManager.persist(entity);
+		entityManager.merge(entity);
 	}
 	
 	public void remove(T entity) {
@@ -32,7 +32,7 @@ public abstract class GenericDAO<T> {
 	
 	public abstract List<T> getAll();
 	/*public List<T> getAll() {
-		Query query = entityManager.createQuery("select c from " + T.getSimpleClassName() + " ñ");
+		Query query = entityManager.createQuery("select c from " + T.getSimpleClassName() + "");
 		
 		return query.getResultList();
 		

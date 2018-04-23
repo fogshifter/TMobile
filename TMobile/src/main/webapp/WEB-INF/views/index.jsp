@@ -30,14 +30,14 @@
 	        </button>
 	        <div class="collapse navbar-collapse" id="navbarCollapse">
 	          <ul class="navbar-nav mr-auto">
-	            <li class="nav-item active">
-	              <a class="nav-link" href="#"><h4>Home</h4><span class="sr-only">(current)</span></a>
+	            <li class="nav-item">
+	              <a class="nav-link text-white" href="#"><h4>Company</h4><span class="sr-only">(current)</span></a>
 	            </li>
 	            <li class="nav-item">
-	              <a class="nav-link" href="#"><h4>Link</h4></a>
+	              <a class="nav-link text-white" href="#"><h4>Products</h4></a>
 	            </li>
 	            <li class="nav-item">
-	              <a class="nav-link disabled" href="#"><h4>Disabled</h4></a>
+	              <a class="nav-link text-white" href="#"><h4>Contacts</h4></a>
 	            </li>
 	          </ul>
 	          <a class="nav-link navbar-brand" href="<jstl:url value="login"/>"><h4>Sign in</h4></a>
@@ -67,7 +67,7 @@
           <div class="carousel-item">
             <img class="second-slide" src="<jstl:url value="/resources/images/orange_bg.jpg"/>" alt="Second slide">
             <div class="container">
-              <div class="carousel-caption">
+              <div class="carousel-caption outline">
                 <h1>Unlimited is only as good as the nework it's on.</h1>
                 <p>Get the best unlimited and get the best streaming, unlimited mobile hotspot and all the data you need.</p>
               </div>
@@ -76,7 +76,7 @@
           <div class="carousel-item">
             <img class="third-slide" src="<jstl:url value="/resources/images/town1_bg.jpg"/>" alt="Third slide">
             <div class="container">
-              <div class="carousel-caption text-right">
+              <div class="carousel-caption text-right outline">
                 <h1>The real magic of connectivity.</h1>
                 <p>Leading provider with some 156 million mobile customers, 29 million fixed-network lines and more than 18 million broadband lines, T-Mobile is paving the way for the gigabit society.</p>
               </div>
