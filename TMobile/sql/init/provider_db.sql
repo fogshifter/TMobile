@@ -53,6 +53,40 @@ CREATE TABLE `contract_options` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `options_compat`
+--
+
+DROP TABLE IF EXISTS `options_compat`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `options_compat` (
+  `option_id` int(11) NOT NULL,
+  `compat_option_id` int(11) NOT NULL,
+  KEY `option_id` (`option_id`),
+  KEY `compat_option_id` (`compat_option_id`),
+  CONSTRAINT `options_compat_ibfk_1` FOREIGN KEY (`option_id`) REFERENCES `t_option` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `options_compat_ibfk_2` FOREIGN KEY (`compat_option_id`) REFERENCES `t_option` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `options_required`
+--
+
+DROP TABLE IF EXISTS `options_required`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `options_required` (
+  `option_id` int(11) NOT NULL,
+  `required_option_id` int(11) NOT NULL,
+  PRIMARY KEY (`option_id`,`required_option_id`),
+  KEY `required_option_id` (`required_option_id`),
+  CONSTRAINT `options_required_ibfk_1` FOREIGN KEY (`option_id`) REFERENCES `t_option` (`id`),
+  CONSTRAINT `options_required_ibfk_2` FOREIGN KEY (`required_option_id`) REFERENCES `t_option` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `t_option`
 --
 
@@ -61,11 +95,11 @@ DROP TABLE IF EXISTS `t_option`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_option` (
   `id` int(11) NOT NULL,
-  `compatible` tinyint(1) NOT NULL DEFAULT '1',
   `payment` int(11) DEFAULT NULL,
   `price` int(11) DEFAULT NULL,
   `description` text NOT NULL,
   `name` varchar(255) NOT NULL,
+  `compatible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -136,4 +170,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-23  5:12:45
+-- Dump completed on 2018-05-09 17:32:19
