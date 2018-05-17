@@ -1,0 +1,72 @@
+version: '2.1'
+services:
+  t-tomcat:
+    image: tomcat:9.0.6
+    container_name: t-tomcat
+    ports:
+      - "8080:8080"
+    links:
+      - t-rabbitMq
+      - t-mysql
+    volumes:
+      - ./target/TMobile-0.2-SNAPSHOT.war:/usr/local/tomcat/webapps/TMobile.war
+    networks:
+      - t_network
+
+  t-rabbitMq:
+    image: rabbitmq:3-management
+    container_name: t-rabbitMq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      - "5671:5671"
+    environment:
+      RABBITMQ_DEFAULT_PASS: pass
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_VHOST: vhost
+    networks:
+      - t_network
+
+  t-mysql:
+    image: mysql:5.7.21
+    container_name: t-mysql
+    hostname: t-mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=provider
+      - MYSQL_USER=provider_user
+      - MYSQL_PASSWORD=qwerty
+    ports:
+      - "3306:3306"
+    volumes:
+      - /var/lib/mysql
+      - ./sql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: "/usr/bin/mysql --user=provider_user --password=qwerty --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 10s
+      retries: 5
+    networks:
+      - t_network
+
+  t-flyway:
+    image: boxfuse/flyway:4.2.0
+    container_name: t-flyway
+    command: -url=jdbc:mysql://t-mysql:3306/provider -user=provider_user -password=qwerty -schemas=provider -baselineOnMigrate=true -baselineVersion=0.1 migrate
+    volumes:
+      - ./sql/provider:/flyway/sql
+    depends_on:
+      t-mysql:
+        condition: service_healthy
+    networks:
+      - t_network
+
+volumes:
+  data-jenkins:
+    driver: "local"
+
+networks:
+  t_network:
+      driver: bridge
+
+
