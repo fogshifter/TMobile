@@ -5,88 +5,136 @@ import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "t_option")
 public class Option {
-	
-	private int id;
-	private int payment;
-	private int price;
-	private String name;
-	private String description;
-	boolean compatible;
 
-	private List<TariffOptions> compatibleTariffs = new ArrayList<>();
-//	private List<OptionOptions> compatibleOptions =
+    private int id;
+    private int payment;
+    private int price;
+    private String name;
+    private String description;
+    private boolean compatible = true;
 
-	@OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<TariffOptions> getCompatibleTariffs() {
-        return compatibleTariffs;
+//    private List<TariffOptions> compatibleTariffOptions = new ArrayList<>();
+    private List<Tariff> compatibleTariffs = new ArrayList<>();
+
+    private List<Option> compatibleOptions = new ArrayList<>();
+    private List<Option> requiredOptions = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "compatibleOptions")
+    public List<Tariff> getCompatibleTariffs() {
+        return this.compatibleTariffs;
     }
 
-    public void setCompatibleTariffs(List<TariffOptions> tariffOptions) {
-	    this.compatibleTariffs = tariffOptions;
+    public void setCompatibleTariffs(List<Tariff> tariffs) {
+        this.compatibleTariffs = tariffs;
     }
 
-//    @OneToMany(mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
-//    public List
+    /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<TariffOptions> getCompatibleTariffOptions() {
+        return compatibleTariffOptions;
+    }
+
+    public void addDefaultTariffOptions(TariffOptions tariffOptions) {
+        this.compatibleTariffOptions.add(tariffOptions);
+    }
+
+    public void setCompatibleTariffOptions(List<TariffOptions> tariffOptions) {
+        this.compatibleTariffOptions = tariffOptions;
+    }*/
+
+    @ManyToMany(cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(name = "options_compat",
+               joinColumns = {@JoinColumn(name = "option_id")},
+               inverseJoinColumns = {@JoinColumn(name = "compat_option_id")})
+    public List<Option> getCompatibleOptions() {
+        return this.compatibleOptions;
+    }
+
+    public void setCompatibleOptions(List<Option> compatibleOptions) {
+        this.compatibleOptions = compatibleOptions;
+    }
+
+    public void addCompatibleOption(Option compatibleOption) {
+        this.compatibleOptions.add(compatibleOption);
+    }
+
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(name = "options_required",
+               joinColumns = {@JoinColumn(name = "option_id")},
+               inverseJoinColumns = {@JoinColumn(name = "required_option_id")})
+    public List<Option> getRequiredOptions() {
+        return this.requiredOptions;
+    }
+
+    public void setRequiredOptions(List<Option> requiredOptions) {
+        this.requiredOptions = requiredOptions;
+    }
+
+    public void addRequiredOptions(Option requiredOption) {
+        this.requiredOptions.add(requiredOption);
+    }
 
     @Id
-	@Column(name = "id")
-	@GeneratedValue(generator = "increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	@Column(name = "payment")
-	public int getPayment() {
-		return payment;
-	}
-	public void setPayment(int payment) {
-		this.payment = payment;
-	}
-	
-	@Column(name = "price")
-	public int getPrice() {
-		return price;
-	}
-	public void setPrice(int price) {
-		this.price = price;
-	}
-	
-	@Column(name = "compatible")
-	public boolean isCompatible() {
-		return compatible;
-	}
-	public void setCompatible(boolean compatible) {
-		this.compatible = compatible;
-	}
+    @Column(name = "id")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    public int getId() {
+        return id;
+    }
 
-	@Column(name = "name")
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Column(name = "payment")
+    public int getPayment() {
+        return payment;
+    }
+
+    public void setPayment(int payment) {
+        this.payment = payment;
+    }
+
+    @Column(name = "price")
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    @Column(name = "name")
     public String getName() {
-	    return name;
+        return name;
     }
 
     public void setName(String name) {
-	    this.name = name;
+        this.name = name;
     }
 
-	@Column(name = "description")
+    @Column(name = "description")
     @Type(type = "text")
     public String getDescription() {
-	    return description;
+        return description;
     }
 
     public void setDescription(String desc) {
-	    this.description = desc;
+        this.description = desc;
+    }
+
+    @Column(name = "compatible")
+    @Type(type = "boolean")
+    public boolean isCompatible() {
+        return compatible;
+    }
+
+    public void setCompatible(boolean compatible) {
+        this.compatible = compatible;
     }
 
     @Override
@@ -98,12 +146,13 @@ public class Option {
                 payment == option.payment &&
                 price == option.price &&
                 compatible == option.compatible &&
+                Objects.equals(name, option.name) &&
                 Objects.equals(description, option.description);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, payment, price, compatible, description);
+        return Objects.hash(id, payment, price, name, description, compatible);
     }
 }

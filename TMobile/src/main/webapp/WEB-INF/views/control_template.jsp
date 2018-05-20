@@ -10,22 +10,38 @@
         <jstl:set var="page_title" value="Contracts list"/>
     </jstl:when>
     <jstl:when test="${page == 'EDIT_CONTRACT'}">
-        <jstl:set var="page_url" value="edit_contract.jsp"/>
+        <jstl:set var="page_url" value="contract.jsp"/>
         <jstl:set var="page_title" value="Contract profile"/>
     </jstl:when>
     <jstl:when test="${page == 'NEW_CONTRACT'}">
-        <jstl:set var="page_url" value="new_contract.jsp"/>
+        <jstl:set var="page_url" value="contract.jsp"/>
         <jstl:set var="page_title" value="Contract information"/>
     </jstl:when>
     <jstl:when test="${page == 'TARIFFS'}">
-        <jstl:set var="page_url" value="tariffs.jsp"/>
+        <jstl:set var="page_url" value="tariffs_list.jsp"/>
         <jstl:set var="page_title" value="Tariffs"/>
     </jstl:when>
+    <jstl:when test="${page == 'TARIFF' || page == 'NEW_TARIFF'}">
+        <jstl:set var="page_url" value="tariff.jsp"/>
+        <jstl:set var="page_title" value="Tariff"/>
+    </jstl:when>
     <jstl:when test="${page == 'OPTIONS'}">
-        <jstl:set var="page_url" value="options.jsp"/>
+        <jstl:set var="page_url" value="options_list.jsp"/>
         <jstl:set var="page_title" value="Options"/>
     </jstl:when>
+    <jstl:when test="${page == 'OPTION' || page == 'NEW_OPTION'}">
+        <jstl:set var="page_url" value="option.jsp"/>
+        <jstl:set var="page_title" value="Option"/>
+    </jstl:when>
 </jstl:choose>
+
+
+<jstl:if test="${user == 'CUSTOMER'}">
+    <jstl:set var="contractsListUrl" value="/customer"/>
+</jstl:if>
+<jstl:if test="${user == 'MANAGER'}">
+    <jstl:set var="contractsListUrl" value="/manager"/>
+</jstl:if>
 
 
 <html lang="en">
@@ -53,7 +69,11 @@
         <!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
         <!--<input class="form-control form-control-primary w-100" type="text" placeholder="Search" aria-label="Search"> -->
         <!--<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">-->
-        <h4 class="text-white mr-auto px-3">Control panel</h4>
+        <%--<h4 class="text-white mr-auto px-3">Control panel</h4>--%>
+        <h4 class="text-white px-3 mr-auto">Control panel</h4>
+        <jstl:if test="${page == 'CONTRACTS' && user == 'MANAGER'}">
+            <input class="form-control mr-sm-2 col-2" type="text" placeholder="Phone" id="phoneSearch">
+        </jstl:if>
         <!--</div>-->
         <ul class="navbar-nav px-3">
             <li class="nav-item text-nowrap">
@@ -81,7 +101,8 @@
                                 <a class="nav-link
                                   <jstl:if test="${page == 'CONTRACTS' || page == 'EDIT_CONTRACT'}">
                                     active
-                                  </jstl:if>" href="<jstl:url value="/manager"/>">
+                                      </jstl:if>" href="<jstl:url value="${contractsListUrl}"/>">
+                                  <%--</jstl:if>" href="<jstl:if test="${user}" <jstl:url value="/manager"/>">--%>
                                     <span data-feather="list"></span>
                                     Contracts
                                 </a>
@@ -107,12 +128,30 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link
-                                      <jstl:if test="${page == 'OPTIONS'}">
+                                      <jstl:if test="${page == 'NEW_TARIFF'}">
+                                        active
+                                      </jstl:if>" href="<jstl:url value="/manager/tariffs/new"/>">
+                                        <span data-feather="file"></span>
+                                        New tariff
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link
+                                      <jstl:if test="${page == 'OPTIONS' || page == 'EDIT_OPTION'}">
                                         active
                                       </jstl:if>" href="<jstl:url value="/manager/options"/>">
                                         <span data-feather="shopping-cart"></span>
                                         Options
                                     </a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link
+                                      <jstl:if test="${page == 'NEW_OPTION'}">
+                                        active
+                                      </jstl:if>" href="<jstl:url value="/manager/options/new"/>">
+                                    <span data-feather="shopping-cart"></span>
+                                    New option
+                                </a>
                                 </li>
                             </jstl:if>
                         </ul>

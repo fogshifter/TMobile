@@ -28,7 +28,7 @@ $(function () {
 });
 </script>
 
-<script src="<jstl:url value="/resources/js/sendForm.js"/>"></script>
+<script src="<jstl:url value="/resources/js/utils.js"/>"></script>
 
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 <script src="<jstl:url value="/resources/js/popper.min.js"/>"></script>

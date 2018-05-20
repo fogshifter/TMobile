@@ -9,17 +9,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class HibernateConfig {
-	@Bean
-	public LocalEntityManagerFactoryBean createEntityManagerFactory() {
-		LocalEntityManagerFactoryBean factory = new LocalEntityManagerFactoryBean();
-		factory.setPersistenceUnitName("tttprovider-pu");
-		return factory;
-	}
-	
-	@Bean 
-	public JpaTransactionManager createJpaTransactionManager() {
-		JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(createEntityManagerFactory().getObject());
-		return transactionManager;
-	}
+    @Bean
+    public LocalEntityManagerFactoryBean createEntityManagerFactory() {
+        LocalEntityManagerFactoryBean factory = new LocalEntityManagerFactoryBean();
+        factory.setPersistenceUnitName("tttprovider-pu");
+        return factory;
+    }
+
+    @Bean
+    public JpaTransactionManager createJpaTransactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(createEntityManagerFactory().getObject());
+        return transactionManager;
+    }
 }

@@ -1,17 +1,13 @@
 package com.tmobile.dto;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
-//@Component
-//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+
 public class ContractInfoDTO {
     private int customerId;
     private int tariffId;
+    private int contractId;
     private String firstName;
     private String lastName;
     private String birthDate;
@@ -20,9 +16,19 @@ public class ContractInfoDTO {
     private String phone;
     private String password;
     private String passportData;
+    private int blocked;
     private List<Integer> optionIds = new ArrayList<>();
 
-    public ContractInfoDTO() {}
+    public ContractInfoDTO() {
+    }
+
+    public int getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(int contractId) {
+        this.contractId = contractId;
+    }
 
     public int getCustomerId() {
         return customerId;
@@ -114,5 +120,13 @@ public class ContractInfoDTO {
 
     public void setPassportData(String data) {
         this.passportData = data;
+    }
+
+    public int getBlocked() {
+        return this.blocked;
+    }
+
+    public void setBlocked(int blocked) {
+        this.blocked = blocked;
     }
 }

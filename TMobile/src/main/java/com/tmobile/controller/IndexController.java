@@ -7,15 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/")
 public class IndexController {
-	
-//	@Autowired
-//	private CustomerService s;
-//	private UserDAO s;
-	
-//	@Autowired PasswordEncoder encoder;
-	
-	@GetMapping
-	public String indexPage() {
+
+    @GetMapping
+    public String indexPage() {
 		
 		/*User user = new User();
 		user.setAddress("Sun");
@@ -26,7 +20,6 @@ public class IndexController {
 		user.setRole("ROLE_MANAGER");
 
 		s.insert(user);*/
-		
-		return "index";
-	}
+        return "index";
+    }
 }

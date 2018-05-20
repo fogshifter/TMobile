@@ -1,5 +1,9 @@
 package com.tmobile.dto;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 public class OptionDTO {
     private int id;
     private int payment;
@@ -7,6 +11,34 @@ public class OptionDTO {
     private String description;
     private String name;
     boolean compatible;
+//    boolean required;//
+//    List<Integer> compatibleOptions = new ArrayList<>();
+//    List<OptionDTO> requiredOptions = new ArrayList<>();
+
+//    public List<OptionDTO> getRequiredOptions() {
+//        return requiredOptions;
+//    }
+//
+//    public void setRequiredOptions(List<OptionDTO> requiredOptions) {
+//        this.requiredOptions = requiredOptions;
+//    }
+//
+//    public List<OptionDTO> getCompatibleOptions() {
+//        return compatibleOptions;
+//    }
+//
+//    public void addCompatibleOption(OptionDTO option) {
+//
+//        this.compatibleOptions.add(option);
+//    }
+//
+//    public List<OptionDTO> getRequiredOptions() {
+//        return requiredOptions;
+//    }
+//
+//    public void addRequiredOptions(OptionDTO option) {
+//        this.requiredOptions.add(option);
+//    }
 
     public String getName() {
         return name;

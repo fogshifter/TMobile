@@ -14,7 +14,7 @@
 	<groupId>com.tmobile</groupId>
 	<artifactId>TMobile</artifactId>
 	<packaging>war</packaging>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.5-SNAPSHOT</version>
 	<name>T-Mobile</name>
 
 	<dependencies>

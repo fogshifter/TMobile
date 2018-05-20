@@ -3,6 +3,7 @@ package com.tmobile.dao;
 
 import com.tmobile.entity.Tariff;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -16,7 +17,7 @@ public class TariffDAO extends GenericDAO<Tariff> {
     public Tariff getDefaultTariff() {
         List<Tariff> tariffs = entityManager.createQuery("select t from Tariff t where t.defaultTariff=true").getResultList();
 
-        if(tariffs.isEmpty()) {
+        if (tariffs.isEmpty()) {
             return null;
         }
 
