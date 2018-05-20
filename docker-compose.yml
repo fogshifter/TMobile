@@ -36,6 +36,7 @@ services:
     container_name: t-mysql
     hostname: t-mysql
     environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
       - MYSQL_DATABASE=provider
       - MYSQL_USER=provider_user
       - MYSQL_PASSWORD=qwerty
