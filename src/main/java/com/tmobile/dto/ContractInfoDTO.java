@@ -1,7 +1,9 @@
 package com.tmobile.dto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ContractInfoDTO {
@@ -128,5 +130,31 @@ public class ContractInfoDTO {
 
     public void setBlocked(int blocked) {
         this.blocked = blocked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContractInfoDTO that = (ContractInfoDTO) o;
+        return customerId == that.customerId &&
+                tariffId == that.tariffId &&
+                contractId == that.contractId &&
+                blocked == that.blocked &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(birthDate, that.birthDate) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(phone, that.phone) &&
+                Objects.equals(password, that.password) &&
+                Objects.equals(passportData, that.passportData) &&
+                Arrays.equals(optionIds.toArray(), that.optionIds.toArray());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(customerId, tariffId, contractId, firstName, lastName, birthDate, email, address,
+                phone, password, passportData, blocked, optionIds);
     }
 }

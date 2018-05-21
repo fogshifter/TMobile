@@ -1,8 +1,6 @@
 package com.tmobile.dto;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 
 public class OptionDTO {
     private int id;
@@ -113,5 +111,23 @@ public class OptionDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OptionDTO optionDTO = (OptionDTO) o;
+        return id == optionDTO.id &&
+                payment == optionDTO.payment &&
+                price == optionDTO.price &&
+                compatible == optionDTO.compatible &&
+                Objects.equals(description, optionDTO.description) &&
+                Objects.equals(name, optionDTO.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, payment, price, description, name, compatible);
     }
 }

@@ -1,7 +1,6 @@
 package com.tmobile.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class TariffsListEntryDTO {
     private int id;
@@ -39,5 +38,21 @@ public class TariffsListEntryDTO {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TariffsListEntryDTO that = (TariffsListEntryDTO) o;
+        return id == that.id &&
+                price == that.price &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, price);
     }
 }

@@ -1,6 +1,8 @@
 package com.tmobile.dto;
 
 
+import java.util.Objects;
+
 public class ContractsListEntryDTO {
 
     private int id;
@@ -56,5 +58,23 @@ public class ContractsListEntryDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContractsListEntryDTO that = (ContractsListEntryDTO) o;
+        return id == that.id &&
+                Objects.equals(firstName, that.firstName) &&
+                Objects.equals(lastName, that.lastName) &&
+                Objects.equals(email, that.email) &&
+                Objects.equals(tariff, that.tariff) &&
+                Objects.equals(phone, that.phone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, tariff, phone);
     }
 }
