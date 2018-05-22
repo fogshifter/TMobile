@@ -20,26 +20,32 @@
     <jstl:set var="saveBtnText" value="Save"/>
 
     <jstl:set var="actionMethod" value="PUT"/>
+    <jstl:set var="customerInfoEditable" value="disabled"/>
 
 
     <jstl:if test="${contractInfo.blocked != 0}">
         <jstl:if test="${user == 'CUSTOMER' && contractInfo.blocked == 2}">
-            <jstl:set var="customerInfoEditable" value="disabled"/>
             <jstl:set var="blockBtnClb" value=""/>
+            <jstl:set var="blockBtnAttr" value="disabled"/>
         </jstl:if>
         <jstl:set var="contractBlocked" value="disabled"/>
         <jstl:set var="blockBtnText" value="Unblock"/>
         <jstl:set var="blockBtnClass" value="disabled"/>
+        <jstl:set var="blockBtnAttr" value=""/>
+
     </jstl:if>
 
 </jstl:if>
 
+<jstl:if test="${user == 'CUSTOMER'}">
+    <jstl:url value="/customer" var="redirectURL"/>
+</jstl:if>
+<jstl:if test="${user == 'MANAGER'}">
+    <jstl:url value="/manager" var="redirectURL"/>
+</jstl:if>
 
 
-
-
-
-<form method="${actionURL}" action="<jstl:url value="/contracts/"/>" id="contractData" customerId="${contractInfo.customerId}" novalidate>
+<form method="${actionMethod}" action="<jstl:url value="/contracts/"/>" id="contractData" customerId="${contractInfo.customerId}" novalidate>
 
 <input type="hidden" name="contractId" value="${contractInfo.contractId}">
 <input type="hidden" name="blocked" value="${contractInfo.blocked}">
@@ -49,7 +55,7 @@
 </div>
 <%--<form class="needs-validation" novalidate>--%>
 <%--<form method="POST" onsubmit="javascript:void(0);" id="contractData" class="needs-validation" novalidate>--%>
-    <div class="row">
+<div class="row">
         <div class="col-md-7 order-md-1">
             <%--<form class="needs-validation" novalidate>--%>
             <div class="form-group row">
@@ -115,9 +121,9 @@
 
                             <jstl:set var="compatOptionCardId" value="collapse_tariff_${tariff.id}"/>
                             <jstl:set var="compatOptionHeadId" value="t_head_${tariff.id}"/>
-                            <jstl:set var="tariffChecked" value="${customerInfoEditable}"/>
+                            <jstl:set var="tariffChecked" value="${contractBlocked}"/>
                             <jstl:if test="${tariff.id == contractInfo.tariffId}">
-                                <jstl:set var="tariffChecked" value = "checked ${customerInfoEditable}"/>
+                                <jstl:set var="tariffChecked" value = "checked ${contractBlocked}"/>
                             </jstl:if>
 
                             <div class="card border-light mb-2 mr-2">
@@ -157,7 +163,7 @@
 
                             <jstl:forEach var="contractOptionId" items="${contractInfo.optionIds}">
                                 <jstl:if test="${contractOptionId == option.id}">
-                                    <jstl:set var="optionAttrs" value = "checked ${customerInfoEditable}"/>
+                                    <jstl:set var="optionAttrs" value = "checked ${contractBlocked}"/>
                                 </jstl:if>
                             </jstl:forEach>
 
@@ -187,12 +193,12 @@
     <jstl:if test="${page != 'NEW_CONTRACT'}">
         <div class="col-5">
 
-            <button class="btn btn-primary btn-lg btn-block ${blockButtonClass}" type="button" onclick="${blockBtnClb}">${blockBtnText}</button>
+            <button class="btn btn-primary btn-lg btn-block ${blockButtonClass}" type="button" id="blockBtn" onclick="${blockBtnClb}" ${blockBtnAttr}>${blockBtnText}</button>
         </div>
     </jstl:if>
 
     <div class="col-5">
-        <button class="btn btn-primary btn-lg btn-block" type="button" onclick="${saveBtnClb}">${saveBtnText}</button>
+        <button class="btn btn-primary btn-lg btn-block" type="button" id="saveBtn" onclick="${saveBtnClb}" ${contractBlocked}>${saveBtnText}</button>
     </div>
 </div>
 
@@ -223,8 +229,29 @@ form.classList.add('was-validated');
 <script>
 
     function blockContract() {
-        contractData = $('#contractData').serializeObject()
-        // contractData.blocked =
+
+        formEl = $('#contractData')
+        contractData = formEl.serializeObject()
+        method = formEl.attr('method')
+        url = formEl.attr('action')
+
+        $("#contractData :input").prop('disabled', true)
+        $('#blockBtn').click(unblockContract)
+        $('#blockBtn').text('Unblock')
+
+        saveContract(false)
+    }
+
+    function unblockContract() {
+
+        $("#contractData :input").prop('disabled', false)
+        form = ('#contractData').serializeObject()
+
+        $('#blockBtn').click(blockContract)
+        $('#blockBtn').text('Block')
+
+        saveContract(false)
+
     }
 
     function updateOptions(options) {
@@ -256,7 +283,7 @@ form.classList.add('was-validated');
             var url = '${syncInfoURL}'
 
             var formData = $('#contractData').serializeObject()
-            callREST(url, formMethod.attr('method'), JSON.stringify(formData), updateOptions)
+            callREST(url, 'PUT', JSON.stringify(formData), updateOptions)
 
         </jstl:if>
         <jstl:if test="${page != 'NEW_CONTRACT'}">
@@ -268,109 +295,41 @@ form.classList.add('was-validated');
             // formData = $('#contractData').serializeObject()
 
         </jstl:if>
-
-        <%--url = '${syncInfoURL}'--%>
-
-        <%--sendForm($('#contractData'), url, function(options, status) {--%>
-            <%--$('#options :checkbox').each(function(idx, input){--%>
-
-                <%--$(input).removeAttr('checked')--%>
-
-                <%--options.forEach(function(option) {--%>
-                    <%--if(('opt_id_' + option['id']) == $(input).attr('id')) {--%>
-                        <%--$(input).attr('checked', '')--%>
-                    <%--}--%>
-                <%--})--%>
-            <%--})--%>
-        <%--})--%>
     })
 
 
-    <%--$('#contractData :input').change(function() {--%>
+    function saveContract(redirect) {
 
-        <%--<jstl:if test="${user == 'CUSTOMER'}">--%>
-            <%--var url = '<jstl:url value="/customer/sync_contract_info"/>'--%>
-        <%--</jstl:if>--%>
-        <%--<jstl:if test="${user == 'MANAGER'}">--%>
-        <%--var url = '<jstl:url value="/manager/sync_contract_info"/>'--%>
-        <%--</jstl:if>--%>
+        var contractData = {}
+        $('#contractData :input').each(function(idx, inputEl){
+            var name = $(inputEl).attr('name')
+            var val =  $(inputEl).val()
 
+            if(contractData[name] != null) {
+                if(!contractData[name].push) {
+                    contractData[name] = [contractData[name]]
+                }
 
-        <%--sendForm($('#contractData'), url, function(options, status) {--%>
-            <%--console.log(options)--%>
-            <%--/*temp = $('#options.card :first').clone()--%>
-            <%--$('#options.card').remove()--%>
+                contractData[name].push(val)
+            } else {
+                contractData[name] = val
+            }
+        })
 
-            <%--optionsEl = $('#options')--%>
+        console.log('contractData: ' + contractData)
 
-            <%--options.forEach(function(option) {--%>
+        var formEl = $('#contractData')
+        var url = formEl.attr('action')
+        var method = formEl.attr('method')
 
-                <%--card = temp.clone();--%>
-                <%--cardHeader = card.find('.card-header')--%>
+        callREST(url, method, JSON.stringify(contractData), function(responseData, status, xhr) {
+            console.log('save contract: ' + xhr.status)
+            console.log('save contract: ' + responseData)
 
-                <%--var cardHeaderId = 'o_head_' + option['id']--%>
-                <%--var cardId = 'collapse_option_' + option['id']--%>
-
-                <%--cardHeader.attr('id', cardHeaderId)--%>
-                <%--cardHeader.find('button')--%>
-                    <%--.text(option['name'])--%>
-                    <%--.attr('data-target', cardId)--%>
-                    <%--.attr('aria-controls',cardId)--%>
-
-                <%--cardHeader.find('input')--%>
-                    <%--.attr('id', 'opt_id_' + option['id'])--%>
-                    <%--.attr('value', option['id'])--%>
-
-                <%--cardHeader.find('label')--%>
-                    <%--.attr('for', 'opt_id_' + option['id'])--%>
-
-                <%--card.find('#option_price')--%>
-                    <%--.text(option['price'])--%>
-
-                <%--card.find('#option_payment')--%>
-                    <%--.text(option['payment'])--%>
-
-                <%--card.find('#option_desc')--%>
-                    <%--.text(option['description'])--%>
-
-                <%--optionsEl.append(card)--%>
-            <%--})*/--%>
-        <%--})--%>
-    <%--})--%>
-
-    function saveContract() {
-        <jstl:if test="${user == 'CUSTOMER'}">
-            var url = '<jstl:url value="/customer/edit_contract"/>'
-            var redirectUrl = '<jstl:url value="/customer"/>'
-        </jstl:if>
-        <jstl:if test="${user == 'MANAGER'}">
-            var url = '<jstl:url value="/manager/edit_contract"/>'
-            var redirectUrl = '<jstl:url value="/manager"/>'
-        </jstl:if>
-
-        // sendForm($('#contractData'), url, function(data) {
-        //     window.location.replace(redirectUrl)
-        // })
-        sendForm($('#contractData'), url)
-        setTimeout(function(){
-            window.location.replace(redirectUrl)
-        }, 1000)
+            if(redirect) {
+                window.location.href = '${redirectURL}'
+            }
+        })
     }
 
-    <%--function syncContractInfo() {--%>
-        <%--contractData = $('#contractData').serialize()--%>
-
-
-        <%--$('#email').change(function(){--%>
-            <%--var email = $(this).val();--%>
-            <%--$.get({--%>
-                <%--dataType: 'json',--%>
-                <%--data : {'email': email},--%>
-                <%--url : '<jstl:url value="/contract/check_email_uniqueness"/>',--%>
-                <%--// http://localhost:8080/TMobile/contract/check_email_uniqueness/',--%>
-                <%--success : function(response, textStatus) {--%>
-                    <%--console.log(response)--%>
-                <%--}--%>
-            <%--})--%>
-        <%--})--%>
 </script>

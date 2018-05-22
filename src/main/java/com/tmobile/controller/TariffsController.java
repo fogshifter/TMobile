@@ -5,7 +5,6 @@ import com.tmobile.dto.TariffDTO;
 import com.tmobile.dto.TariffsListEntryDTO;
 import com.tmobile.exception.EntryNotFoundException;
 import com.tmobile.exception.TMobileException;
-import com.tmobile.service.OptionsService;
 import com.tmobile.service.TariffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,10 +28,12 @@ public class TariffsController {
         return service.getAll();
     }
 
-    @DeleteMapping("/{tariffId}")
+    @DeleteMapping//("/{tariffId}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void remove(@PathVariable int tariffId) throws TMobileException {
-        service.removeTariff(tariffId);
+//    public void removeTariffs(@PathVariable int tariffId) throws TMobileException {
+    public void remove(@RequestBody List<Integer> tariffsIds) throws TMobileException {
+//        service.removeTariff(tariffId);
+        service.removeTariffs(tariffsIds);
     }
 
     @GetMapping("/{tariffId")

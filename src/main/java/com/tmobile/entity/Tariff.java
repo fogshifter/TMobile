@@ -23,6 +23,8 @@ public class Tariff {
 //    private List<TariffOptions> compatibleOptions = new ArrayList<>();
     private List<Option> compatibleOptions = new ArrayList<>();
 
+    private List<Contract> tariffContracts = new ArrayList<>();
+
     @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
     @JoinTable(
             name = "tariff_options",
@@ -36,6 +38,17 @@ public class Tariff {
     public void setCompatibleOptions(List<Option> options) {
         this.compatibleOptions = options;
     }
+
+//    @OneToMany(mappedBy = "tariff", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tariff")
+    public List<Contract> getTariffContracts() {
+        return tariffContracts;
+    }
+
+    public void setTariffContracts(List<Contract> tariffContracts) {
+        this.tariffContracts = tariffContracts;
+    }
+
     /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "tariff", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<TariffOptions> getCompatibleOptions() {
         return compatibleOptions;
@@ -55,8 +68,8 @@ public class Tariff {
 
     public void removeCompatibleOption(Option option) {
         TariffOptions tariffOptions = new TariffOptions(this, option);
-        option.getCompatibleTariffOptions().remove(tariffOptions);
-        compatibleOptions.remove(tariffOptions);
+        option.getCompatibleTariffOptions().removeTariffs(tariffOptions);
+        compatibleOptions.removeTariffs(tariffOptions);
         tariffOptions.setOption(null);
         tariffOptions.setTariff(null);
     }*/

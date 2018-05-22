@@ -1,11 +1,13 @@
 package com.tmobile.service;
 
 
+import com.tmobile.dao.ContractDAO;
 import com.tmobile.dao.OptionDAO;
 import com.tmobile.dao.TariffDAO;
 import com.tmobile.dto.OptionDTO;
 import com.tmobile.dto.TariffDTO;
 import com.tmobile.dto.TariffsListEntryDTO;
+import com.tmobile.entity.Contract;
 import com.tmobile.entity.Option;
 import com.tmobile.entity.Tariff;
 import com.tmobile.exception.EntryNotFoundException;
@@ -22,11 +24,13 @@ public class TariffService {
 
     private TariffDAO tariffDAO;
     private OptionDAO optionDAO;
+    private ContractDAO contractDAO;
     private ModelMapper modelMapper;
 
-    public TariffService(TariffDAO tariffDAO, OptionDAO optionDAO, ModelMapper mapper) {
+    public TariffService(TariffDAO tariffDAO, OptionDAO optionDAO, ContractDAO contractDAO, ModelMapper mapper) {
         this.optionDAO = optionDAO;
         this.tariffDAO = tariffDAO;
+        this.contractDAO = contractDAO;
         this.modelMapper = mapper;
     }
 
@@ -80,14 +84,29 @@ public class TariffService {
     }
 
     @Transactional
-    public void removeTariff(int id) throws EntryNotFoundException {
-        Tariff tariff = tariffDAO.find(id);
+//    public void removeTariff(int id) throws EntryNotFoundException {
+    public void removeTariffs(List<Integer> tariffsIds) throws EntryNotFoundException {
+//        Tariff tariff = tariffDAO.find(id);
 
-        if(tariff == null) {
+        List<Tariff> tariffs = tariffDAO.getByIds(tariffsIds);
+
+//        if(tariff == null) {
+        if(tariffs.size() != tariffsIds.size()) {
             throw new EntryNotFoundException("Tariff not found");
         }
 
-        tariffDAO.remove(tariff);
+        for(Tariff tariff : tariffs) {
+            List<Contract> contracts = tariff.getTariffContracts();
+
+            // change contract tariff to default tariff
+            for(Contract contract : contracts) {
+                contract.setTariff(tariffDAO.getDefaultTariff());
+                contractDAO.update(contract);
+            }
+            tariff.setTariffContracts(null);
+        }
+
+        tariffDAO.remove(tariffs);
     }
 
     // TODO: move converting DTO to Entities from services to converters layer

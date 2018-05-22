@@ -5,14 +5,29 @@
 <!-- Custom styles for this template -->
 <!--<link href="form-validation.css" rel="stylesheet">-->
 
+<jstl:url var="compatibleOptionsURL" value="/options/compatible"/>
+<jstl:url var="requiredOptionsURL" value="/options/required"/>
+
+<jstl:url var="requiredOpsRestrictionsURL" value="/options/restrictions"/>
+<jstl:url var="allOptionsURL" value="/options"/>
+<jstl:set value="checked" var="compatibleToAll"/>
+<jstl:set value="Full Compatibility" var="compatToAllBtnText"/>
+
+
 <jstl:if test="${page == 'OPTION'}">
     <jstl:set value="${option.name}" var="optionName"/>
     <jstl:set value="${option.description}" var="optionDescription"/>
     <jstl:set value="${option.price}" var="optionPrice"/>
     <jstl:set value="${option.payment}" var="optionPayment"/>
+    <jstl:set value="${option.id}" var="optionId"/>
     <jstl:set var="buttonName" value="Save"/>
-    <jstl:set var="requestType" value="PUT"/>
-    <jstl:url value="/manager/options/" var="requestUrl"/>
+    <jstl:set var="saveRequestType" value="PUT"/>
+    <jstl:url value="/options" var="saveRequestURL"/>
+
+    <jstl:if test="${!option.compatible}">
+        <jstl:set var="compatibleToAll" value=""/>
+        <jstl:set value="Partial Compatibility" var="compatToAllBtnText"/>
+    </jstl:if>
 </jstl:if>
 <jstl:if test="${page == 'NEW_OPTION'}">
     <jstl:set value="" var="optionName"/>
@@ -22,8 +37,8 @@
     <jstl:set value="" var="optionId"/>
     <jstl:set value="" var="requiredOptions"/>
     <jstl:set var="buttonName" value="Create"/>
-    <jstl:set var="requestType" value="POST"/>
-    <jstl:url value="/manager/options/new" var="requestUrl"/>
+    <jstl:set var="saveRequestType" value="POST"/>
+    <jstl:url value="/options" var="saveRequestURL"/>
 </jstl:if>
 
 <div class = "row">
@@ -32,9 +47,10 @@
     <h4 class = "col-md-4">Required options</h4>
 </div>
 
-<%--<form method="POST" onsubmit="javascript:void(0);" id="contractData" class="needs-validation" novalidate>--%>
-<%--<form method="POST" action="<jstl:url value="/manager/options"/>" id="optionData" class="needs-validation" novalidate>--%>
+
 <form action="<jstl:url value="/manager/options"/>" id="optionData" class="needs-validation" novalidate>
+    <input type="hidden" name="id" value="${optionId}">
+    <input type="hidden" id="compatible" name="compatible" value="true">
     <div class="row">
         <div class="col-md-4 order-md-1">
             <div class="form-group">
@@ -53,14 +69,14 @@
             </div>
             <div class="form-group">
                 <label for="optionPrice">Option price: $</label>
-                <input type="number" class="form-control" id="optionPrice" name="price" placeholder="" value="$${optionPrice}" required>
+                <input type="number" class="form-control" id="optionPrice" name="price" placeholder="" value="${optionPrice}" required>
                 <div class="invalid-feedback">
                     Valid option price is required.
                 </div>
             </div>
             <div class="form-group">
                 <label for="optionPayment">Monthly payment: $</label>
-                <input type="number" class="form-control" id="optionPayment" name="payment" value="$${optionPayment}" required>
+                <input type="number" class="form-control" id="optionPayment" name="payment" value="${optionPayment}" required>
                 <div class="invalid-feedback">
                     Please enter a valid payment.
                 </div>
@@ -84,7 +100,7 @@
                             <jstl:param name="cardOptionPrice" value="${compatibleOption.price}" />
                             <jstl:param name="cardOptionPayment" value="${compatibleOption.payment}" />
                             <jstl:param name="optionInputName" value="compatibleOptions" />
-                            <jstl:param name="optionCardAttrs" value="" />
+                            <jstl:param name="optionCardAttrs" value="${compatibleToAll}" />
                         </jstl:import>
                     </jstl:forEach>
                 <%--</div>--%>
@@ -120,8 +136,14 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <button class="btn btn-primary btn-lg btn-block mt-5" type="button" onclick="saveOption()">${buttonName}</button>
+    <div class="row justify-content-md-end">
+        <div class="col-md-4">
+            <button class="btn btn-primary btn-lg btn-block" type="button" id="compatibleSwitch" onclick="toggleCompatible()">${compatToAllBtnText}</button>
+        </div>
+        <div class="col-md-4">
+
+            <button class="btn btn-primary btn-lg btn-block" type="button" onclick="saveOption()">${buttonName}</button>
+        </div>
     </div>
 </form>
 <%--<div class="row">--%>
@@ -132,34 +154,14 @@
 </div>
 </div>
 
-<!--<script>
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-(function() {
-'use strict';
-
-window.addEventListener('load', function() {
-// Fetch all the forms we want to apply custom Bootstrap validation styles to
-var forms = document.getElementsByClassName('needs-validation');
-
-// Loop over them and prevent submission
-var validation = Array.prototype.filter.call(forms, function(form) {
-form.addEventListener('submit', function(event) {
-if (form.checkValidity() === false) {
-event.preventDefault();
-event.stopPropagation();
-}
-form.classList.add('was-validated');
-}, false);
-});
-}, false);
-})();
-</script>-->
 
 <script>
 
-    checkedCompatibleOptions = []
+    registerCheckboxListener()
 
-    $('#requiredOptions :checkbox').change(function() {
+    function registerCheckboxListener() {
+        $('#requiredOptions :checkbox').change(function() {
+
         checkedRequiredOptions = []
         $('#requiredOptions :input:checked').each(function(idx, checkbox) {
             checkedRequiredOptions.push($(checkbox).val())
@@ -167,101 +169,142 @@ form.classList.add('was-validated');
         })
         console.log('checked required options: ' + checkedRequiredOptions)
 
-        // var requiredOptions = JSON.stringify({'requiredOptions' : checkedRequiredOptions})
-        var requiredOptions = {'requiredOptions' : checkedRequiredOptions}
+        if(checkedRequiredOptions.length == 0) {
+
+            callREST('${allOptionsURL}', 'GET', null, function(responseData, status, xhr) {
+                console.log('all required uncheched response status :' + xhr.status)
+                console.log('all required uncheched response data:' + responseData)
+
+                replaceOptionsList('required', responseData)
+                replaceOptionsList('compatible', responseData)
+                registerCheckboxListener()
+                setCompatible(true)
+
+                $('#compatibleSwitch').prop('disabled', false)
+            })
+
+
+
+            return
+        }
+
+        var requiredOptions = {'requiredOptions' : checkedRequiredOptions.join(',')}
 
         console.log('data: ' + requiredOptions)
 
-        callREST('/TMobile/options/compatible', 'GET', requiredOptions, function(responseData, status, xhr) {
-            console.log('response status :' + xhr.status)
-            console.log('response data:' + responseData)
+        callREST('${requiredOpsRestrictionsURL}', 'GET', requiredOptions, function(responseData, status, xhr) {
+            console.log('compatible response status :' + xhr.status)
+            console.log('compatible response data:' + responseData)
 
-            checkedCompatibleOptions = []
+            replaceOptionsList('compatible', responseData['compatible'])
+            replaceOptionsList('required', responseData['required'], 'checked')
+            addOptionsList('required', responseData['compatible'])
+            registerCheckboxListener()
+            setCompatible(false)
+            $('#compatibleSwitch').prop('disabled', true)
 
-            responseData.forEach(function(option) {
-
-
-                optionCard = getOptionCard()
-            })
+            // updateRequiredOptions(requiredOptions, responseData);
         })
-        // $.ajax({
-        //     url : '/TMobile/options/compatible',
-        //     method : 'GET',
-        //     // data : encodeURI(requiredOptions),
-        //     data : requiredOptions,
-        //     traditional : true,
-        //     success : function(responseData, status, xhr) {
-        //         console.log('response status :' + xhr.status)
-        //         console.log('response data:' + responseData)
-        //
-        //
-        //     }
-        // })
     })
-
-
-    $('#compatibleOptions :checkbox').change(function() {
-        // compatibleOptions = []
-        if(this.checked) {
-            checkedCompatibleOptions.push(this)
-        } else {
-            checkedCompatibleOptions
-        }
-
-        $('#compatibleOptions :input:checked').each(function(idx, checkbox) {
-            compatibleOptions.push($(checkbox).val())
-            console.log(checkbox)
-        })
-        console.log('checked compatible options: ' + compatibleOptions)
-    })
-
-    function addOptionCard(optionCardIdPrefix, optionCardHeadIdPrefix, option, checked) {
-        var cardHTML =
-            '<div class="card border-light mb-2 mr-2">' +
-                '<div class="card-header d-flex justify-content-between lh-condensed" id="' + optionCardHeadIdPrefix + option.id + '">' +
-                    '<h5 class="mb-0">' +
-                        '<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#requiredOption2" area-expanded="false" aria-controls="requiredOption2">' +
-                            'Superhit 3G ' +
-                        '</button>' +
-                    '</h5>' +
-                '<div class="custom-control custom-checkbox">' +
-                    '<input type="checkbox" id="checkboxrequiredOption2" name="requiredOptions" value="2" class="custom-control-input"> ' +
-                    '<label class="custom-control-label" for="checkboxrequiredOption2"></label> ' +
-                '</div> ' +
-            '</div> ' +
-            '<div id="requiredOption2" class="collapse" aria-labelledby="requiredOptionHead2" data-parent="#requiredOptions"> ' +
-                '<ul class="list-group list-group-flush"> ' +
-                    '<li class="list-group-item d-flex justify-content-between lh-condensed"> ' +
-                        '<span>Price:</span> ' +
-                        '<span>$15</span> ' +
-                    '</li> ' +
-                '<li class="list-group-item d-flex justify-content-between lh-condensed"> ' +
-                    '<span>Payment:</span> ' +
-                    '<span>$10</span> ' +
-                '</li> ' +
-                '</ul> ' +
-                '<div class="card-body">' +
-                    'Serf world wide internet without any further delay! ' +
-                '</div> ' +
-            '</div> ' +
-        '</div>'
-
     }
 
+    function addOptionsList(listType, options, checked = '') {
+        if(listType == 'compatible') {
+            options.forEach(function(option) {
+                if(${option.id} != option.id) {
+                    var optionCheckboxAttrs = ''
+                    var optionCardIdPrefix = 'compatibleOption'
+                    var optionCardHeadIdPrefix = 'compatibleOptionHead'
+                    var optionInputName = 'compatibleOptions'
+                    var compatibleOptionCard = getOptionCard(optionCardIdPrefix, optionCardHeadIdPrefix, optionInputName, optionCheckboxAttrs, option)
+                    compatibleOptionCard.appendTo($('#compatibleOptions'))
+                }
+            })
+        }
+        else if(listType == 'required') {
+
+            options.forEach(function(option){
+                if(${option.id} != option.id) {
+                    var optionCheckboxAttrs = checked
+                    var optionCardIdPrefix = 'requiredOption'
+                    var optionCardHeadIdPrefix = 'requiredOptionHead'
+                    var optionInputName = 'requiredOptions'
+
+                    var requiredOptionCard = getOptionCard(optionCardIdPrefix, optionCardHeadIdPrefix, optionInputName, optionCheckboxAttrs, option)
+                    requiredOptionCard.appendTo($('#requiredOptions'))
+                }
+            })
+        }
+    }
+
+    function replaceOptionsList(listType, options, checked = '') {
+
+        if(listType == 'compatible') {
+            var compatibleOptionsEl = $('#compatibleOptions')
+            compatibleOptionsEl.empty()
+        }
+        else if(listType == 'required') {
+            var requiredOptionsEl = $('#requiredOptions')
+            requiredOptionsEl.empty()
+        }
+        addOptionsList(listType, options, checked)
+    }
+
+    function setCompatible(compatible) {
+        compatibleEl = $('#compatible')
+        compatibleBtn = $('#compatibleSwitch')
+        compatibleCheckboxes = $('#compatibleOptions :checkbox')
+
+        if(compatible == true) {
+            compatibleCheckboxes.prop('checked', true)
+            compatibleEl.val('true')
+            compatibleBtn.text('Full Compatibility')
+        }
+        else {
+            compatibleCheckboxes.prop('checked', false)
+            compatibleEl.val('false')
+            compatibleBtn.text('Partial Compatibility')
+        }
+    }
+
+    function toggleCompatible() {
+
+        compatible = $('#compatible').val()
+
+        if(compatible == 'false') {
+            setCompatible(true)
+        }
+        else {
+            setCompatible(false)
+        }
+    }
 
     function saveOption() {
-        form = $('#optionData')
-    }
-    function register() {
-        form = $('#contractData')
-        <%--sendForm(form, form.attr('action'), function() {--%>
-        <%--window.location.replace('<jstl:url value="/manager"/>')--%>
-        <%--})--%>
+        form = $('#optionData').serializeObject()
 
-        sendForm(form, form.attr('action'))
-        setTimeout(function(){
-            window.location.replace('<jstl:url value="/manager"/>')
-        }, 1000)
+        if(!Array.isArray(form.compatibleOptions)) {
+            if('compatibleOptions' in form) {
+                form.compatibleOptions = [form.compatibleOptions]
+            }
+            else {
+                form.compatibleOptions = []
+            }
+        }
+
+        if(!Array.isArray(form.requiredOptions)) {
+            if('requiredOptions' in form) {
+                form.requiredOptions = [form.requiredOptions]
+            }
+            else {
+                form.requiredOptions = []
+            }
+        }
+
+        var url = '${saveRequestURL}'
+        callREST(url, '${saveRequestType}', JSON.stringify(form), function (responseData, status, xhr) {
+            // window
+        })
+
     }
 
 </script>

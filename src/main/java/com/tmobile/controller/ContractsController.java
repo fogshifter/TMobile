@@ -34,16 +34,6 @@ public class ContractsController {
         this.contractService = contractService;
     }
 
-//    @PutMapping("/sync_contract_info")
-//    public void syncContractInfo(@RequestBody ContractInfoDTO contractInfoDTO, HttpSession session) {
-//
-//        ProviderUserDetails userDetails = (ProviderUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//
-//        boolean customer = userDetails.getAuthorities().stream().noneMatch(r -> r.getAuthority().contains("MANAGER"));
-//
-//        if(!customer) {}
-//    }
-
     @PutMapping("/sync_new_contract_info")
     @ResponseStatus(value = HttpStatus.OK)
     public List<OptionDTO> syncNewContractInfo(@RequestBody ContractInfoDTO contractInfoDTO, HttpSession session) throws EntryNotFoundException {

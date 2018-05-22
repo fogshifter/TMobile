@@ -33,10 +33,10 @@ function callREST(url, method, jsonData, clb) {
         dataType: 'json',
         data: jsonData,
         contentType : 'application/json; charset=UTF-8',
-        success: function(data, status) {
+        success: function(data, status, xhr) {
             console.log('response status: ' + status)
             console.log('response data: ' + data)
-            clb(data)
+            clb(data, status, xhr)
         }
     })
 }
@@ -58,7 +58,7 @@ function getOptionCard(optionCardIdPrefix, optionCardHeadIdPrefix, optionInputNa
                 '</h5>' +
                 '<div class="custom-control custom-checkbox">' +
                     '<input type="checkbox" id="checkbox' + optionCardId + '" name="'+ optionInputName +'" value="'+ option.id +'" class="custom-control-input"'+ checkboxAttrs +'> ' +
-                    '<label class="custom-control-label" for="checkbox'+ option.id +'"></label> ' +
+                    '<label class="custom-control-label" for="checkbox'+ optionCardId +'"></label> ' +
                 '</div> ' +
             '</div> ' +
             '<div id="'+ optionCardId +'" class="collapse" aria-labelledby="'+ optionCardHeadId +'" data-parent="#'+ optionInputName +'"> ' +

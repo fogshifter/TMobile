@@ -7,8 +7,8 @@
 
 <jstl:if test="${page == 'TARIFF'}">
     <jstl:set var="buttonName" value="Save"/>
-    <jstl:set var="requestType" value="PUT"/>
-    <jstl:url value="/manager/options/" var="requestUrl"/>
+    <jstl:set var="saveRequestType" value="PUT"/>
+    <jstl:url value="/manager/options/" var="saveRequestURL"/>
 </jstl:if>
 <jstl:if test="${page == 'NEW_TARIFF'}">
     <jstl:set var="buttonName" value="Create"/>
@@ -24,7 +24,7 @@
 
 <%--<form method="POST" onsubmit="javascript:void(0);" id="contractData" class="needs-validation" novalidate>--%>
 <%--<form method="POST" action="<jstl:url value="/manager/options"/>" id="optionData" class="needs-validation" novalidate>--%>
-<form action="<jstl:url value="/tariffs"/>" id="tariffData" class="needs-validation" method="${requestType}" novalidate>
+<form action="<jstl:url value="/tariffs"/>" id="tariffData" class="needs-validation" method="${saveRequestType}" novalidate>
     <input type="hidden" name="id" value="${tariff.id}"/>
 
     <div class="row">

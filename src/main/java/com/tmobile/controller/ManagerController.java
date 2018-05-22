@@ -136,15 +136,17 @@ public class ManagerController {
 
         OptionDTO option = optionsService.getOption(optionId);
 
-        List<OptionDTO> compatibleOptions = optionsService.getCompatibleOptions(option.getId());
-        List<OptionDTO> requiredOptions = optionsService.getRequiredOptions(option.getId());
+//        List<OptionDTO> compatibleOptions = optionsService.getCompatibleOptions(option.getId());
+//        List<OptionDTO> requiredOptions = optionsService.getRequiredOptions(option.getId());
+//        List<OptionDTO> possibleCompatibleOptions =
 
         ModelAndView view = new ModelAndView("control_template");
         view.addObject("user", "MANAGER");
         view.addObject("page", "OPTION");
         view.addObject("option", option);
-        view.addObject("compatibleOptions", compatibleOptions);
-        view.addObject("requiredOptions", requiredOptions);
+        view.addObject("allOptions", optionsService.getAll());
+//        view.addObject("compatibleOptions", compatibleOptions);
+//        view.addObject("requiredOptions", requiredOptions);
 
         return view;
     }
@@ -155,6 +157,7 @@ public class ManagerController {
         ModelAndView view = new ModelAndView("control_template");
         view.addObject("user", "MANAGER");
         view.addObject("page", "NEW_OPTION");
+        view.addObject("option", new OptionDTO());
         view.addObject("compatibleOptions", optionsService.getAll());
         return view;
     }

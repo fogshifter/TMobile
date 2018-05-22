@@ -11,7 +11,7 @@ import java.util.*;
 @Table(name = "t_option")
 public class Option {
 
-    private int id;
+    private int id = 0;
     private int payment;
     private int price;
     private String name;
@@ -23,6 +23,7 @@ public class Option {
 
     private List<Option> compatibleOptions = new ArrayList<>();
     private List<Option> requiredOptions = new ArrayList<>();
+    private List<Contract> optionContracts = new ArrayList<>();
 
     @ManyToMany(mappedBy = "compatibleOptions")
     public List<Tariff> getCompatibleTariffs() {
@@ -33,6 +34,15 @@ public class Option {
         this.compatibleTariffs = tariffs;
     }
 
+
+    @ManyToMany(mappedBy="options")
+    public List<Contract> getOptionContracts() {
+        return optionContracts;
+    }
+
+    public void setOptionContracts(List<Contract> contracts) {
+        this.optionContracts = contracts;
+    }
     /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "option", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<TariffOptions> getCompatibleTariffOptions() {
         return compatibleTariffOptions;

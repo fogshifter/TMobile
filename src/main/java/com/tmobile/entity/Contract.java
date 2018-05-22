@@ -2,6 +2,7 @@ package com.tmobile.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.*;
 
@@ -67,7 +68,10 @@ public class Contract {
     }
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) // cascade ?
-    @JoinTable(name = "contract_options")
+    @JoinTable(
+        name = "contract_options",
+        joinColumns = { @JoinColumn(name = "contract_id") },
+        inverseJoinColumns = { @JoinColumn(name = "option_id")})
     public List<Option> getOptions() {
         return options;
     }
@@ -108,5 +112,23 @@ public class Contract {
 
     public void setBlocked(eBlocked blocked) {
         this.blocked = blocked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Contract)) return false;
+        Contract contract = (Contract) o;
+        return id == contract.id &&
+                Objects.equals(phone, contract.phone) &&
+                Objects.equals(customer, contract.customer) &&
+                Objects.equals(tariff, contract.tariff) &&
+                blocked == contract.blocked;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, phone, customer, tariff, blocked);
     }
 }

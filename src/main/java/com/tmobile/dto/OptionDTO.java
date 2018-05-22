@@ -11,8 +11,35 @@ public class OptionDTO {
     private String description;
     private String name;
     boolean compatible;
+
+
 //    boolean required;//
-//    List<Integer> compatibleOptions = new ArrayList<>();
+    List<Integer> compatibleOptions = new ArrayList<>();
+    List<Integer> requiredOptions = new ArrayList<>();
+
+    public List<Integer> getCompatibleOptions() {
+        return compatibleOptions;
+    }
+
+    public void setCompatibleOptions(List<Integer> optionsIds) {
+        compatibleOptions = optionsIds;
+    }
+
+    public void addCompatibleOption(int id) {
+        compatibleOptions.add(id);
+    }
+
+    public List<Integer> getRequiredOptions() {
+        return requiredOptions;
+    }
+
+    public void setRequiredOptions(List<Integer> optionsIds) {
+        requiredOptions = optionsIds;
+    }
+
+    public void addRequiredOptions(int id) {
+        requiredOptions.add(id);
+    }
 //    List<OptionDTO> requiredOptions = new ArrayList<>();
 
 //    public List<OptionDTO> getRequiredOptions() {
