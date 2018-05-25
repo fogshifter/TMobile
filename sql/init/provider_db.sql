@@ -27,6 +27,7 @@ CREATE TABLE `contract` (
   `p_number` varchar(255) DEFAULT NULL,
   `customer_id` int(11) DEFAULT NULL,
   `tariff_id` int(11) DEFAULT NULL,
+  `blocked` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `FKj6fluygwv28m5ra2sj703c61w` (`customer_id`),
   KEY `FKr9ow9rvoc733hmd7wfglmft3g` (`tariff_id`),
@@ -43,12 +44,12 @@ DROP TABLE IF EXISTS `contract_options`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contract_options` (
-  `Contract_id` int(11) NOT NULL,
-  `options_id` int(11) NOT NULL,
-  KEY `FKdkigbvyfkmr69bhdk14xgi5b` (`options_id`),
-  KEY `FK37peinimwve8g24934lmwhdby` (`Contract_id`),
-  CONSTRAINT `FK37peinimwve8g24934lmwhdby` FOREIGN KEY (`Contract_id`) REFERENCES `contract` (`id`),
-  CONSTRAINT `FKdkigbvyfkmr69bhdk14xgi5b` FOREIGN KEY (`options_id`) REFERENCES `t_option` (`id`)
+  `contract_id` int(11) NOT NULL,
+  `option_id` int(11) NOT NULL,
+  KEY `FKdkigbvyfkmr69bhdk14xgi5b` (`option_id`),
+  KEY `FK37peinimwve8g24934lmwhdby` (`contract_id`),
+  CONSTRAINT `FK37peinimwve8g24934lmwhdby` FOREIGN KEY (`contract_id`) REFERENCES `contract` (`id`),
+  CONSTRAINT `FKdkigbvyfkmr69bhdk14xgi5b` FOREIGN KEY (`option_id`) REFERENCES `t_option` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

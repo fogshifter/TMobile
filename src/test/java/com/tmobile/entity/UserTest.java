@@ -11,6 +11,8 @@ public class UserTest {
     public void testPojo() {
         final Class<?> classUnderTest = User.class;
         assertPojoMethodsFor(classUnderTest).testing(Method.GETTER, Method.SETTER)
+                .testing(Method.EQUALS)
+                .testing(Method.HASH_CODE)
                 .testing(Method.CONSTRUCTOR)
                 .areWellImplemented();
     }

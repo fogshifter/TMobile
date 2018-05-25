@@ -1,23 +1,14 @@
 package com.tmobile.entity;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.GeneratedValue;
-
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "user")
@@ -44,28 +35,6 @@ public class User {
         this.birthDate = birthDate;
         this.password = password;
         this.email = email;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id == user.id &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(birthDate, user.birthDate) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(address, user.address) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(role, user.role) &&
-                Objects.equals(passportData, user.passportData);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, firstName, lastName, birthDate, password, address, email, role, passportData);
     }
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -170,5 +139,28 @@ public class User {
 
     public void setPassportData(String passportData) {
         this.passportData = passportData;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(birthDate, user.birthDate) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(address, user.address) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(role, user.role) &&
+                Objects.equals(passportData, user.passportData) &&
+                Objects.equals(contracts, user.contracts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, birthDate, password, address, email, role,
+                passportData, contracts);
     }
 }

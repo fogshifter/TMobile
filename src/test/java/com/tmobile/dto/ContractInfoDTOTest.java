@@ -11,6 +11,8 @@ public class ContractInfoDTOTest {
     public void testPojo() {
         final Class<?> classUnderTest = ContractInfoDTO.class;
         assertPojoMethodsFor(classUnderTest).testing(Method.GETTER, Method.SETTER)
+                .testing(Method.EQUALS)
+                .testing(Method.HASH_CODE)
                 .testing(Method.CONSTRUCTOR)
                 .areWellImplemented();
     }

@@ -1,11 +1,12 @@
 package com.tmobile.entity;
 
-import javax.persistence.*;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import java.util.*;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "t_option")
@@ -197,6 +198,7 @@ public class Option {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, payment, price, name, description, compatible, compatibleTariffs, compatibleOptions, requiredOptions, optionContracts);
+        return Objects.hash(id, payment, price, name, description, compatible, compatibleTariffs,
+                compatibleOptions, requiredOptions, optionContracts);
     }
 }

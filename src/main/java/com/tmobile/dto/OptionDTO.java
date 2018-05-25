@@ -133,6 +133,7 @@ public class OptionDTO {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, payment, price, description, name, compatible, compatibleOptions, requiredOptions);
+        return Objects.hash(id, payment, price, description, name, compatible, compatibleOptions,
+                requiredOptions);
     }
 }

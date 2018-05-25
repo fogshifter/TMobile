@@ -1,12 +1,11 @@
 package com.tmobile.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import javax.persistence.*;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "contract")
@@ -117,18 +116,19 @@ public class Contract {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Contract)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Contract contract = (Contract) o;
         return id == contract.id &&
                 Objects.equals(phone, contract.phone) &&
                 Objects.equals(customer, contract.customer) &&
                 Objects.equals(tariff, contract.tariff) &&
-                blocked == contract.blocked;
+                blocked == contract.blocked &&
+                Objects.equals(options, contract.options);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, phone, customer, tariff, blocked);
+        return Objects.hash(id, phone, customer, tariff, blocked, options);
     }
 }

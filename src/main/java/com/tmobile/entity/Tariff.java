@@ -1,12 +1,11 @@
 package com.tmobile.entity;
 
-import javax.persistence.*;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import java.util.List;
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -126,16 +125,20 @@ public class Tariff {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Tariff)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Tariff tariff = (Tariff) o;
         return id == tariff.id &&
                 price == tariff.price &&
-                Objects.equals(name, tariff.name);
+                defaultTariff == tariff.defaultTariff &&
+                Objects.equals(name, tariff.name) &&
+                Objects.equals(description, tariff.description) &&
+                Objects.equals(compatibleOptions, tariff.compatibleOptions) &&
+                Objects.equals(tariffContracts, tariff.tariffContracts);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, name, price, defaultTariff);
+        return Objects.hash(id, name, description, price, defaultTariff, compatibleOptions,
+                tariffContracts);
     }
 }
