@@ -1,5 +1,7 @@
 package com.tmobile.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class OptionDTO {
@@ -116,18 +118,21 @@ public class OptionDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof OptionDTO)) return false;
         OptionDTO optionDTO = (OptionDTO) o;
         return id == optionDTO.id &&
                 payment == optionDTO.payment &&
                 price == optionDTO.price &&
                 compatible == optionDTO.compatible &&
                 Objects.equals(description, optionDTO.description) &&
-                Objects.equals(name, optionDTO.name);
+                Objects.equals(name, optionDTO.name) &&
+                Objects.equals(compatibleOptions, optionDTO.compatibleOptions) &&
+                Objects.equals(requiredOptions, optionDTO.requiredOptions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, payment, price, description, name, compatible);
+
+        return Objects.hash(id, payment, price, description, name, compatible, compatibleOptions, requiredOptions);
     }
 }

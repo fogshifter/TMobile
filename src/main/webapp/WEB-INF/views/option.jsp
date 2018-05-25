@@ -10,16 +10,11 @@
 
 <jstl:url var="requiredOpsRestrictionsURL" value="/options/restrictions"/>
 <jstl:url var="allOptionsURL" value="/options"/>
-<jstl:set value="checked" var="compatibleToAll"/>
+<jstl:set value="true" var="compatibleToAll"/>
 <jstl:set value="Full Compatibility" var="compatToAllBtnText"/>
 
 
 <jstl:if test="${page == 'OPTION'}">
-    <jstl:set value="${option.name}" var="optionName"/>
-    <jstl:set value="${option.description}" var="optionDescription"/>
-    <jstl:set value="${option.price}" var="optionPrice"/>
-    <jstl:set value="${option.payment}" var="optionPayment"/>
-    <jstl:set value="${option.id}" var="optionId"/>
     <jstl:set var="buttonName" value="Save"/>
     <jstl:set var="saveRequestType" value="PUT"/>
     <jstl:url value="/options" var="saveRequestURL"/>
@@ -30,11 +25,6 @@
     </jstl:if>
 </jstl:if>
 <jstl:if test="${page == 'NEW_OPTION'}">
-    <jstl:set value="" var="optionName"/>
-    <jstl:set value="" var="optionDescription"/>
-    <jstl:set value="" var="optionPrice"/>
-    <jstl:set value="" var="optionPayment"/>
-    <jstl:set value="" var="optionId"/>
     <jstl:set value="" var="requiredOptions"/>
     <jstl:set var="buttonName" value="Create"/>
     <jstl:set var="saveRequestType" value="POST"/>
@@ -49,34 +39,34 @@
 
 
 <form action="<jstl:url value="/manager/options"/>" id="optionData" class="needs-validation" novalidate>
-    <input type="hidden" name="id" value="${optionId}">
-    <input type="hidden" id="compatible" name="compatible" value="true">
+    <input type="hidden" name="id" value="${option.id}">
+    <input type="hidden" id="compatible" name="compatible" value="${compatibleToAll}">
     <div class="row">
         <div class="col-md-4 order-md-1">
             <div class="form-group">
                 <label for="optionName">Option name</label>
-                <input class="form-control" type="text" id="optionName" name="name" placeholder="" value="${optionName}" required>
+                <input class="form-control" type="text" id="optionName" name="name" placeholder="" value="${option.name}" required>
                 <div class="invalid-feedback">
                     Option name is required.
                 </div>
             </div>
             <div class="form-group">
                 <label for="optionDescription">Option description</label>
-                <input type="text" class="form-control" id="optionDescription" name="description" placeholder="" value="${optionDescription}" required>
+                <input type="text" class="form-control" id="optionDescription" name="description" placeholder="" value="${option.description}" required>
                 <div class="invalid-feedback">
                     Description is required.
                 </div>
             </div>
             <div class="form-group">
                 <label for="optionPrice">Option price: $</label>
-                <input type="number" class="form-control" id="optionPrice" name="price" placeholder="" value="${optionPrice}" required>
+                <input type="number" class="form-control" id="optionPrice" name="price" placeholder="" value="${option.price}" required>
                 <div class="invalid-feedback">
                     Valid option price is required.
                 </div>
             </div>
             <div class="form-group">
                 <label for="optionPayment">Monthly payment: $</label>
-                <input type="number" class="form-control" id="optionPayment" name="payment" value="${optionPayment}" required>
+                <input type="number" class="form-control" id="optionPayment" name="payment" value="${option.payment}" required>
                 <div class="invalid-feedback">
                     Please enter a valid payment.
                 </div>
@@ -89,7 +79,16 @@
             <div class="tab-content pre-scrollable" id="compatibleOptions">
                 <%--<div class="tab-pane fade active show" id="compatible">--%>
 
-                    <jstl:forEach var="compatibleOption" items="${compatibleOptions}">
+                    <jstl:forEach var="compatibleOption" items="${allOptions}">
+                        <jstl:set var="compatibleOptionsAttr" value=""/>
+                        <jstl:if test="${option.compatible}">
+                            <jstl:set var="compatibleOpticmonsAttr" value="checked"/>
+                        </jstl:if>
+                        <jstl:forEach var="compatOpId" items="${option.compatibleOptions}">
+                            <jstl:if test="${compatibleOption.id == compatOpId}">
+                                <jstl:set var="compatibleOptionsAttr" value="checked"/>
+                            </jstl:if>
+                        </jstl:forEach>
 
                         <jstl:import url="option_card.jsp">
                             <jstl:param name="optionCardId" value="compatibleOption${compatibleOption.id}" />
@@ -100,7 +99,7 @@
                             <jstl:param name="cardOptionPrice" value="${compatibleOption.price}" />
                             <jstl:param name="cardOptionPayment" value="${compatibleOption.payment}" />
                             <jstl:param name="optionInputName" value="compatibleOptions" />
-                            <jstl:param name="optionCardAttrs" value="${compatibleToAll}" />
+                            <jstl:param name="optionCardAttrs" value="${compatibleOptionsAttr}" />
                         </jstl:import>
                     </jstl:forEach>
                 <%--</div>--%>
@@ -112,7 +111,7 @@
             <%--<div class="tab-content pre-scrollable" style="height: 313px">--%>
             <div class="tab-content pre-scrollable" id="requiredOptions">
                 <%--<div class="tab-pane fade active show" id="compatible">--%>
-                <jstl:forEach var="compatibleOption" items="${compatibleOptions}">
+                <jstl:forEach var="compatibleOption" items="${allOptions}">
 
                     <jstl:forEach var="requiredOption" items="${requiredOptions}">
                         <jstl:if test="${optionCard == requiredOption}">
@@ -157,9 +156,10 @@
 
 <script>
 
-    registerCheckboxListener()
+    registerRequiredListener()
+    registerCompatibleListener()
 
-    function registerCheckboxListener() {
+    function registerRequiredListener() {
         $('#requiredOptions :checkbox').change(function() {
 
         checkedRequiredOptions = []
@@ -177,7 +177,8 @@
 
                 replaceOptionsList('required', responseData)
                 replaceOptionsList('compatible', responseData)
-                registerCheckboxListener()
+                registerRequiredListener()
+                registerCompatibleListener()
                 setCompatible(true)
 
                 $('#compatibleSwitch').prop('disabled', false)
@@ -199,13 +200,44 @@
             replaceOptionsList('compatible', responseData['compatible'])
             replaceOptionsList('required', responseData['required'], 'checked')
             addOptionsList('required', responseData['compatible'])
-            registerCheckboxListener()
-            setCompatible(false)
-            $('#compatibleSwitch').prop('disabled', true)
+            registerRequiredListener()
+            registerCompatibleListener()
+
+            var requiredOptionsCompatible = true
+            responseData['required'].forEach(function(option, idx){
+
+                if(option.compatible == false) {
+                    requiredOptionsCompatible = false;
+                }
+            })
+
+            if(requiredOptionsCompatible) {
+                setCompatible(true)
+            }
+            else {
+                setCompatible(false)
+                $('#compatibleSwitch').prop('disabled', true)
+            }
 
             // updateRequiredOptions(requiredOptions, responseData);
         })
     })
+    }
+
+    function registerCompatibleListener() {
+        $('#compatibleOptions :checkbox').change(function() {
+            if ($('#compatibleOptions :input:checked').length == $('#compatibleOptions :checkbox').length) {
+                if ($('#requiredOptions :input:checked').length == 0) {
+                    setCompatible(true)
+                    $('#compatibleSwitch').prop('disabled', false)
+                }
+            }
+            else {
+                $('#compatible').val('false')
+                $('#compatibleSwitch').text('Partial Compatibility')
+                $('#compatibleSwitch').prop('disabled', false)
+            }
+        })
     }
 
     function addOptionsList(listType, options, checked = '') {

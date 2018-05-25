@@ -25,6 +25,9 @@ public class Option {
     private List<Option> requiredOptions = new ArrayList<>();
     private List<Contract> optionContracts = new ArrayList<>();
 
+    private List<Option> compatibleByOptions = new ArrayList<>();
+    private List<Option> requiredByOptions = new ArrayList<>();
+
     @ManyToMany(mappedBy = "compatibleOptions")
     public List<Tariff> getCompatibleTariffs() {
         return this.compatibleTariffs;
@@ -56,7 +59,7 @@ public class Option {
         this.compatibleTariffOptions = tariffOptions;
     }*/
 
-    @ManyToMany(cascade={CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "options_compat",
                joinColumns = {@JoinColumn(name = "option_id")},
                inverseJoinColumns = {@JoinColumn(name = "compat_option_id")})
@@ -72,7 +75,30 @@ public class Option {
         this.compatibleOptions.add(compatibleOption);
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    public void removeCompatibleOption(Option o) {
+        this.compatibleOptions.remove(o);
+    }
+
+
+    @ManyToMany(mappedBy = "compatibleOptions")
+    public List<Option> getCompatibleByOptions() {
+        return compatibleByOptions;
+    }
+
+    public void setCompatibleByOptions(List<Option> options) {
+        this.compatibleByOptions = options;
+    }
+
+    @ManyToMany(mappedBy = "requiredOptions")
+    public List<Option> getRequiredByOptions() {
+        return requiredByOptions;
+    }
+
+    public void setRequiredByOptions(List<Option> options) {
+        this.requiredByOptions = options;
+    }
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "options_required",
                joinColumns = {@JoinColumn(name = "option_id")},
                inverseJoinColumns = {@JoinColumn(name = "required_option_id")})
@@ -86,6 +112,10 @@ public class Option {
 
     public void addRequiredOptions(Option requiredOption) {
         this.requiredOptions.add(requiredOption);
+    }
+
+    public void removeRequiredOption(Option o) {
+        this.requiredOptions.remove(o);
     }
 
     @Id
@@ -150,19 +180,23 @@ public class Option {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Option)) return false;
         Option option = (Option) o;
         return id == option.id &&
                 payment == option.payment &&
                 price == option.price &&
                 compatible == option.compatible &&
                 Objects.equals(name, option.name) &&
-                Objects.equals(description, option.description);
+                Objects.equals(description, option.description) &&
+                Objects.equals(compatibleTariffs, option.compatibleTariffs) &&
+                Objects.equals(compatibleOptions, option.compatibleOptions) &&
+                Objects.equals(requiredOptions, option.requiredOptions) &&
+                Objects.equals(optionContracts, option.optionContracts);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, payment, price, name, description, compatible);
+        return Objects.hash(id, payment, price, name, description, compatible, compatibleTariffs, compatibleOptions, requiredOptions, optionContracts);
     }
 }

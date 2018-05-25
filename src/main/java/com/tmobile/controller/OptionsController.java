@@ -34,13 +34,14 @@ public class OptionsController {
 //    @DeleteMapping("/{optionId}")
 //    public StatusDTO removeTariffs(@PathVariable int optionId) throws EntryNotFoundException {
     @DeleteMapping
-    @ResponseStatus(value = HttpStatus.OK)
+//    @ResponseStatus(value = HttpStatus.OK)
 //    public void removeTariffs(@RequestParam("optionsIds") List<Integer> optionsIds) throws EntryNotFoundException {
-        public void remove(@RequestBody List<Integer> optionsIds) throws EntryNotFoundException {
+    public HttpStatus remove(@RequestBody List<Integer> optionsIds) throws EntryNotFoundException {
         service.removeOptions(optionsIds);
 //        service.removeOption(optionId);
         // return success status
 //        return new StatusDTO();
+        return HttpStatus.OK;
     }
 
     @GetMapping("/{optionId}")
@@ -52,17 +53,18 @@ public class OptionsController {
 
     @PostMapping
 //    public void createOption(OptionDTO option, List<Integer> compatibleOptions, List<Integer> requiredOptions) throws TMobileException {
-    public void createOption(@RequestBody OptionDTO option) throws TMobileException {
+    public HttpStatus createOption(@RequestBody OptionDTO option) throws TMobileException {
         service.createOption(option);
+        return HttpStatus.OK;
     }
 
     @PutMapping
 //    public void updateOption(OptionDTO option, List<Integer> compatibleOptions, List<Integer> requiredOptions) throws TMobileException {
-    public void updateOption(@RequestBody OptionDTO option) throws TMobileException {
+    public HttpStatus updateOption(@RequestBody OptionDTO option) throws TMobileException {
 
 //        service.updateOption(option, compatibleOptions, requiredOptions);
         service.updateOption(option);
-
+        return HttpStatus.OK;
     }
 
     @GetMapping("/compatible")

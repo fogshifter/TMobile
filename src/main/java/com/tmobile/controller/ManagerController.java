@@ -145,12 +145,14 @@ public class ManagerController {
         view.addObject("page", "OPTION");
         view.addObject("option", option);
         view.addObject("allOptions", optionsService.getAll());
+//        view.addObject("options", optionsService.getAll());
+//        view.addObject("compatibleOptions", optionDTO);
+
 //        view.addObject("compatibleOptions", compatibleOptions);
 //        view.addObject("requiredOptions", requiredOptions);
 
         return view;
     }
-
 
     @GetMapping("options/new")
     public ModelAndView createOption() {
@@ -158,7 +160,9 @@ public class ManagerController {
         view.addObject("user", "MANAGER");
         view.addObject("page", "NEW_OPTION");
         view.addObject("option", new OptionDTO());
-        view.addObject("compatibleOptions", optionsService.getAll());
+//        view.addObject("compatibleOptions", optionsService.getAll());
+        view.addObject("allOptions", optionsService.getAll());
+
         return view;
     }
 

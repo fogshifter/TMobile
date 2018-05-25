@@ -3,6 +3,8 @@ package com.tmobile.config;
 import com.tmobile.converter.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -18,6 +20,7 @@ import org.modelmapper.ModelMapper;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.tmobile")
+@PropertySource("classpath:application.properties")
 public class AppConfig implements WebMvcConfigurer {
     //public class AppConfig extends WebMvcConfigurer  {
     @Bean
@@ -49,5 +52,10 @@ public class AppConfig implements WebMvcConfigurer {
         mapper.addConverter(new TariffToTariffDTOConverter());
 
         return mapper;
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
     }
 }

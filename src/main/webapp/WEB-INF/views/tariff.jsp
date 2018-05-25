@@ -12,7 +12,7 @@
 </jstl:if>
 <jstl:if test="${page == 'NEW_TARIFF'}">
     <jstl:set var="buttonName" value="Create"/>
-    <jstl:set var="requestType" value="POST"/>
+    <jstl:set var="saveRequestType" value="POST"/>
     <jstl:url value="/manager/options/new" var="requestUrl"/>
 </jstl:if>
 

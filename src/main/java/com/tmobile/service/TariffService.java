@@ -13,6 +13,7 @@ import com.tmobile.entity.Tariff;
 import com.tmobile.exception.EntryNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,12 +27,15 @@ public class TariffService {
     private OptionDAO optionDAO;
     private ContractDAO contractDAO;
     private ModelMapper modelMapper;
+    private MessageService messageService;
 
-    public TariffService(TariffDAO tariffDAO, OptionDAO optionDAO, ContractDAO contractDAO, ModelMapper mapper) {
+    @Autowired
+    public TariffService(TariffDAO tariffDAO, OptionDAO optionDAO, ContractDAO contractDAO, ModelMapper mapper, MessageService messageService) {
         this.optionDAO = optionDAO;
         this.tariffDAO = tariffDAO;
         this.contractDAO = contractDAO;
         this.modelMapper = mapper;
+        this.messageService = messageService;
     }
 
     @Transactional
@@ -107,6 +111,7 @@ public class TariffService {
         }
 
         tariffDAO.remove(tariffs);
+        messageService.sendMessage();
     }
 
     // TODO: move converting DTO to Entities from services to converters layer
@@ -128,6 +133,7 @@ public class TariffService {
 
         tariffDAO.insert(tariff);
 //        TariffOptions compatibleOptions = new TariffOptions();
+        messageService.sendMessage();
     }
 
     @Transactional
@@ -152,5 +158,7 @@ public class TariffService {
         tariff.setCompatibleOptions(compatibleOptions);
 
         tariffDAO.update(tariff);
+
+        messageService.sendMessage();
     }
 }

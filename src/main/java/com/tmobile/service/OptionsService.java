@@ -23,7 +23,7 @@ public class OptionsService {
     private OptionDAO optionDAO;
     private ModelMapper modelMapper;
 
-    private boolean isCompatible(List<Option> options) {
+    private boolean isCompatible(Collection<Option> options) {
         for(Option firstOption : options) {
 
             if(firstOption.isCompatible()) {
@@ -44,29 +44,23 @@ public class OptionsService {
         return true;
     }
 
-    private List<Option> getCompatible(List<Option> options) {
+    private List<Option> getCompatible(Collection<Option> options) {
         List<Option> resultList = optionDAO.getAll();
+        resultList.removeAll(options);
 
         for(Option option : options) {
 
-            resultList.remove(option);
             if(option.isCompatible()) {
                 continue;
             }
 
-            List<Option> compatibleOptions = option.getCompatibleOptions();
-
-            resultList.removeIf(opt -> !compatibleOptions.contains(opt));
-//            resultList.removeIf(opt -> );
-//            resultList = resultList.stream().filter(opt -> compatibleOptions.contains(opt)).collect(Collectors.toList());
-
+            resultList.removeIf(opt -> !option.getCompatibleOptions().contains(opt));
         }
 
-        resultList.removeAll(options);
         return resultList;
     }
 
-    private boolean isCompatibleToAll(List<Option> options) {
+    private boolean isCompatibleToAll(Collection<Option> options) {
 
         for(Option option : options) {
             if(!option.isCompatible()) {
@@ -84,14 +78,14 @@ public class OptionsService {
         option.setName(optionDTO.getName());
         option.setPayment(optionDTO.getPayment());
         option.setPrice(optionDTO.getPrice());
-        option.setCompatible(option.isCompatible());
+        option.setCompatible(optionDTO.isCompatible());
 
         List<Integer> compatibleOptionsIds = optionDTO.getCompatibleOptions();
         List<Integer> requiredOptionsIds = optionDTO.getRequiredOptions();
 
-        if (option.isCompatible() && !requiredOptionsIds.isEmpty()) {
+       /* if (option.isCompatible() && !requiredOptionsIds.isEmpty()) {
             // TODO: throw exception
-        }
+        }*/
 
         if (compatibleOptionsIds.isEmpty() && requiredOptionsIds.isEmpty()) {
 //            optionDAO.insert(option);
@@ -121,9 +115,9 @@ public class OptionsService {
 
             boolean requiredOptionsCompatibleToAll = isCompatibleToAll(requiredOptions);
 //
-//        if(!requiredOptionsCompatibleToAll && option.isCompatible()) {
-//            //TODO: throw exception (option cannot be compatible to all because required options restrict the list of compl   atible options for option)
-//        }
+            if(!requiredOptionsCompatibleToAll && option.isCompatible()) {
+                //TODO: throw exception (option cannot be compatible to all because required options restrict the list of compl   atible options for option)
+            }
 
             if (!requiredOptionsCompatibleToAll && !isCompatible(requiredOptions)) {
                 // TODO: throw exception
@@ -225,6 +219,20 @@ public class OptionsService {
             throw new EntryNotFoundException("Option not found");
         }
 
+        for(Option o : options) {
+
+            for(Option refOption : o.getCompatibleByOptions()) {
+                refOption.removeCompatibleOption(o);
+                optionDAO.update(refOption);
+            }
+
+            for(Option refOption : o.getRequiredByOptions()) {
+                refOption.removeRequiredOption(o);
+                optionDAO.update(refOption);
+            }
+
+        }
+
         optionDAO.remove(options);
     }
 
@@ -273,8 +281,8 @@ public class OptionsService {
         }
 
         // Get required options
-        Set<Option> reqOptionsWithDeps = new HashSet<>();
-        reqOptionsWithDeps.addAll(requiredOptions);
+        Set<Option> reqOptionsWithDeps = new HashSet<>(requiredOptions);
+//        reqOptionsWithDeps.addAll(requiredOptions);
 
         for(Option o : requiredOptions) {
             List<Option> reqDeps = o.getRequiredOptions();
@@ -287,8 +295,8 @@ public class OptionsService {
         // Get compatible options
 
         List<Option> compatibleOptions = null;
-        if(isCompatibleToAll(requiredOptions) || isCompatible(requiredOptions)) {
-            compatibleOptions = getCompatible(requiredOptions);
+        if(isCompatibleToAll(reqOptionsWithDeps) || isCompatible(reqOptionsWithDeps)) {
+            compatibleOptions = getCompatible(reqOptionsWithDeps);
         }
         else {
             // TODO throw exception (required options incompatible)
