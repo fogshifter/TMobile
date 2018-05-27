@@ -24,8 +24,9 @@ public class ContractToContractInfoDTOConverter extends AbstractConverter<Contra
         dto.setCustomerId(contract.getCustomer().getId());
         dto.setAddress(contract.getCustomer().getAddress());
         dto.setPassportData(contract.getCustomer().getPassportData());
+        dto.setBlocked(contract.getBlocked().getVal());
 
-        DateFormat df = new SimpleDateFormat("dd.mm.yyyy");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String birthDate = df.format(contract.getCustomer().getBirthDate());
         dto.setBirthDate(birthDate);
 

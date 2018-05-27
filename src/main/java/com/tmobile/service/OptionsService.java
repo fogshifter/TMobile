@@ -5,6 +5,7 @@ import com.tmobile.dao.OptionDAO;
 import com.tmobile.dto.OptionDTO;
 import com.tmobile.entity.Option;
 import com.tmobile.exception.EntryNotFoundException;
+import com.tmobile.exception.InconsistentDataException;
 import com.tmobile.exception.TMobileException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -83,17 +85,13 @@ public class OptionsService {
         List<Integer> compatibleOptionsIds = optionDTO.getCompatibleOptions();
         List<Integer> requiredOptionsIds = optionDTO.getRequiredOptions();
 
-       /* if (option.isCompatible() && !requiredOptionsIds.isEmpty()) {
-            // TODO: throw exception
-        }*/
-
         if (compatibleOptionsIds.isEmpty() && requiredOptionsIds.isEmpty()) {
 //            optionDAO.insert(option);
             return;
         }
 
         if (compatibleOptionsIds.contains(option.getId()) || requiredOptionsIds.contains(option.getId())) {
-            // TODO: throw exception
+            throw new InconsistentDataException("Option self referencing");
         }
 
         List<Option> requiredCompatibleOptions = null;
@@ -106,7 +104,7 @@ public class OptionsService {
             for (Option reqOp : requiredOptions) {
                 boolean dependentRequiredOptionIncluded = reqOp.getRequiredOptions().stream().anyMatch(op -> requiredOptions.contains(op));
                 if (!dependentRequiredOptionIncluded) {
-                    // TODO throw exception
+                    throw new InconsistentDataException("Required options is not included");
                 }
             }
 
@@ -116,18 +114,18 @@ public class OptionsService {
             boolean requiredOptionsCompatibleToAll = isCompatibleToAll(requiredOptions);
 //
             if(!requiredOptionsCompatibleToAll && option.isCompatible()) {
-                //TODO: throw exception (option cannot be compatible to all because required options restrict the list of compl   atible options for option)
+                throw new InconsistentDataException("Partial compatibility is required");
             }
 
             if (!requiredOptionsCompatibleToAll && !isCompatible(requiredOptions)) {
-                // TODO: throw exception
+                throw new InconsistentDataException("Required options incompatible");
             }
 
 
             requiredCompatibleOptions = getCompatible(requiredOptions);
 
             if (compatibleOptionsIds.size() > requiredCompatibleOptions.size()) {
-                // TODO: throw exception
+                throw new InconsistentDataException("Compatible options are not allowed for chosen required options");
             }
         }
 
@@ -140,7 +138,7 @@ public class OptionsService {
             for (Option compatOption : compatibleOptions) {
 //            if(!compatibleOptions.contains(requiredCompatOption)) {
                 if (!requiredOptionsIds.isEmpty() && !requiredCompatibleOptions.contains(compatOption)) {
-                    // TODO: throw exception
+                    throw new InconsistentDataException("Chosen compatible option is not allowed for required options");
                 }
             }
 
@@ -237,11 +235,11 @@ public class OptionsService {
     }
 
     @Transactional
-    public List<OptionDTO> getCompatibleOptions(int id) {
+    public List<OptionDTO> getCompatibleOptions(int id) throws EntryNotFoundException {
         Option option = optionDAO.find(id);
 
         if(option == null) {
-            // TODO: throw exception
+            throw new EntryNotFoundException("Option not found");
         }
 
         if(option.isCompatible()) {
@@ -272,12 +270,12 @@ public class OptionsService {
     }
 
     @Transactional
-    public Map<String, Set<OptionDTO>> getRequiredOptionsRestrictions(List<Integer> requiredOptionsIds) {
+    public Map<String, Set<OptionDTO>> getRequiredOptionsRestrictions(List<Integer> requiredOptionsIds) throws TMobileException {
         Map<String, Set<OptionDTO>> restrictions = new HashMap<>();
 
         List<Option> requiredOptions = optionDAO.getByIds(requiredOptionsIds);
         if(requiredOptions.size() != requiredOptionsIds.size()) {
-            // TODO: throw exception
+            throw new EntryNotFoundException("Options not found");
         }
 
         // Get required options
@@ -299,7 +297,7 @@ public class OptionsService {
             compatibleOptions = getCompatible(reqOptionsWithDeps);
         }
         else {
-            // TODO throw exception (required options incompatible)
+            throw new InconsistentDataException("required options incompatible");
         }
 
 //        targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
@@ -308,11 +306,11 @@ public class OptionsService {
     }
 
     @Transactional
-    public List<OptionDTO> getCompatibleOptions(List<Integer> requiredOptionsIds) {
+    public List<OptionDTO> getCompatibleOptions(List<Integer> requiredOptionsIds) throws TMobileException {
         List<Option> requiredOptions = optionDAO.getByIds(requiredOptionsIds);
 
         if(requiredOptions.size() != requiredOptionsIds.size()) {
-            // TODO: throw exception
+            throw new EntryNotFoundException("Required options not found");
         }
 
         List<Option> compatibleOptions = getCompatible(requiredOptions);
@@ -322,20 +320,16 @@ public class OptionsService {
     }
 
     @Transactional
-    public List<OptionDTO> getRequiredOptions(List<Integer> optionsIds) {
-        List<Option> requiredOptions = optionDAO.getByIds(optionsIds);
+    public List<OptionDTO> getRequiredOptions(List<Integer> optionsIds) throws TMobileException {
+        List<Option> options = optionDAO.getByIds(optionsIds);
 
-        if(requiredOptions.size() != optionsIds.size()) {
-            // TODO: throw exception
+        if(options.size() != optionsIds.size()) {
+            throw new EntryNotFoundException("Options not found");
         }
-
-//        if(isCompatibleToAll(requiredOptions)) {
-//            // TODO: throw exception
-//        }
 
         Set<Option> resultSet = new HashSet<>();
 
-        for(Option option : requiredOptions) {
+        for(Option option : options) {
             List<Option> rOptions = option.getRequiredOptions();
             if(!rOptions.isEmpty()) {
                 resultSet.addAll(rOptions);

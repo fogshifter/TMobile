@@ -2,7 +2,14 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="jstl" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<sec:authorize access="hasRole('MANAGER')">
+    <jstl:set value="MANAGER" var="user"/>
+</sec:authorize>
+<sec:authorize access="hasRole('CUSTOMER')">
+    <jstl:set value="CUSTOMER" var="user"/>
+</sec:authorize>
 
 <jstl:choose>
     <jstl:when test="${page == 'CONTRACTS'}">

@@ -1,8 +1,7 @@
 package com.tmobile.controller;
 
-import com.tmobile.auth.ProviderUserDetails;
+import com.tmobile.auth.TMobileUserDetails;
 import com.tmobile.dto.ContractInfoDTO;
-import com.tmobile.dto.OptionDTO;
 import com.tmobile.service.ContractService;
 import com.tmobile.service.OptionsService;
 import com.tmobile.service.TariffService;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 
 @Controller
@@ -34,7 +32,7 @@ public class CustomerController {
     @GetMapping
     public ModelAndView getProfile() {
 
-        ProviderUserDetails userDetails = (ProviderUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        TMobileUserDetails userDetails = (TMobileUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         ModelAndView view = new ModelAndView("control_template");
         view.addObject("page", "CONTRACTS");
@@ -43,28 +41,28 @@ public class CustomerController {
         return view;
     }
 
-    @GetMapping("/{contractId}")
-    public ModelAndView getContract(@PathVariable int contractId, HttpSession session) {
-
-        ModelAndView view = new ModelAndView("control_template");
-
-
-        ContractInfoDTO cachedContractInfo = (ContractInfoDTO) session.getAttribute("contractInfo" + String.valueOf(contractId));
-        ContractInfoDTO contractInfo = contractService.getContract(contractId);
-
-        if (cachedContractInfo != null) {
-            contractInfo.setOptionIds(cachedContractInfo.getOptionIds());
-            contractInfo.setTariffId(cachedContractInfo.getTariffId());
-        }
-
-        view.addObject("page", "EDIT_CONTRACT");
-        view.addObject("user", "CUSTOMER");
-        view.addObject("contractInfo", contractInfo);
-        view.addObject("options", optionsService.getAll());
-        view.addObject("tariffs", tariffService.getAll());
-
-        return view;
-    }
+//    @GetMapping("/{contractId}")
+//    public ModelAndView getContract(@PathVariable int contractId, HttpSession session) {
+//
+//        ModelAndView view = new ModelAndView("control_template");
+//
+//
+//        ContractInfoDTO cachedContractInfo = (ContractInfoDTO) session.getAttribute("contractInfo" + String.valueOf(contractId));
+//        ContractInfoDTO contractInfo = contractService.getContract(contractId);
+//
+//        if (cachedContractInfo != null) {
+//            contractInfo.setOptionIds(cachedContractInfo.getOptionIds());
+//            contractInfo.setTariffId(cachedContractInfo.getTariffId());
+//        }
+//
+//        view.addObject("page", "EDIT_CONTRACT");
+//        view.addObject("user", "CUSTOMER");
+//        view.addObject("contractInfo", contractInfo);
+//        view.addObject("options", optionsService.getAll());
+//        view.addObject("tariffs", tariffService.getAll());
+//
+//        return view;
+//    }
 //
 //    @PostMapping("/sync_contract_info")
 //    public @ResponseBody

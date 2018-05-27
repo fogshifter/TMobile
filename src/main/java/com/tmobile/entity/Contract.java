@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.tmobile.util.Types;
+import org.hibernate.annotations.GenericGenerator;
+
 @Entity
 @Table(name = "contract")
 public class Contract {
 
-    public enum eBlocked {
+   /* public enum eBlocked {
         NOT_BLOCKED(0),
         BLOCKED_BY_CUSTOMER(1),
         BLOCKED_BY_MANAGER(2);
@@ -24,7 +27,7 @@ public class Contract {
         public int getVal() {
             return this.value;
         }
-    }
+    }*/
 
     private int id;
     private String phone;
@@ -33,7 +36,8 @@ public class Contract {
 
     private Tariff tariff;
 
-    private eBlocked blocked = eBlocked.NOT_BLOCKED;
+//    private eBlocked blocked = eBlocked.NOT_BLOCKED;
+    private Types.ContractBlocked blocked = Types.ContractBlocked.UNBLOCKED;
 
     private List<Option> options = new ArrayList<>();
 
@@ -105,11 +109,11 @@ public class Contract {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "blocked")
-    public eBlocked getBlocked() {
+    public Types.ContractBlocked getBlocked() {
         return this.blocked;
     }
 
-    public void setBlocked(eBlocked blocked) {
+    public void setBlocked(Types.ContractBlocked blocked) {
         this.blocked = blocked;
     }
 

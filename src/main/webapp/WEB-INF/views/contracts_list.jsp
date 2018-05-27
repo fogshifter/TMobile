@@ -26,6 +26,8 @@
                 <tr data-href="<jstl:url value="/manager/contract/${contract.id}"/>">
             </jstl:when>
         </jstl:choose>
+        <tr data-href="<jstl:url value="/contracts/${contract.id}"/>">
+
         <%--<tr data-href="<jstl:url value="/manager/contract/${contract.id}"/>">--%>
             <td>${contract.phone}</td>
             <td>${contract.firstName}</td>

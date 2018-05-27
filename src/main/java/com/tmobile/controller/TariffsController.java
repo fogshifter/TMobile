@@ -28,12 +28,10 @@ public class TariffsController {
         return service.getAll();
     }
 
-    @DeleteMapping//("/{tariffId}")
-    @ResponseStatus(value = HttpStatus.OK)
-//    public void removeTariffs(@PathVariable int tariffId) throws TMobileException {
-    public void remove(@RequestBody List<Integer> tariffsIds) throws TMobileException {
-//        service.removeTariff(tariffId);
+    @DeleteMapping
+    public HttpStatus remove(@RequestBody List<Integer> tariffsIds) throws TMobileException {
         service.removeTariffs(tariffsIds);
+        return HttpStatus.OK;
     }
 
     @GetMapping("/{tariffId")
@@ -49,16 +47,15 @@ public class TariffsController {
     }
 
     @PostMapping
-    @ResponseStatus(value = HttpStatus.OK)
-    public void createOption(@RequestBody TariffDTO tariff) throws TMobileException {
+    public HttpStatus createOption(@RequestBody TariffDTO tariff) throws TMobileException {
 
         service.createTariff(tariff);
+        return HttpStatus.OK;
     }
 
     @PutMapping
-    @ResponseStatus(value = HttpStatus.OK)
-//    public void updateTariff(TariffDTO tariff, List<Integer> compatibleOptions) throws TMobileException {
-    public void updateTariff(@RequestBody TariffDTO tariff) throws TMobileException {
+    public HttpStatus updateTariff(@RequestBody TariffDTO tariff) throws TMobileException {
         service.updateTariff(tariff);
+        return HttpStatus.OK;
     }
 }

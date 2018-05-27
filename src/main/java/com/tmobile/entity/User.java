@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+
+import com.tmobile.util.Types;
+
 @Entity
 @Table(name = "user")
 public class User {
@@ -20,7 +23,8 @@ public class User {
     private String password; // TODO: is this suitable ?
     private String address;
     private String email;
-    private String role;
+//    private String role;
+    private Types.Role role = Types.Role.ROLE_CUSTOMER;
     private String passportData;
 
 
@@ -122,14 +126,26 @@ public class User {
     }
 
     @Column(name = "role")
-    @ColumnDefault(value = "'CUSTOMER'")
-    public String getRole() {
+    @Enumerated(EnumType.STRING)
+//    @ColumnDefault(value = "'CUSTOMER'")
+//    @ColumnDefault(value = "'ROLE_CUSTOMER'")
+//    public String getRole() {
+//        return role;
+//    }
+    public Types.Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
+    public void setRole(Types.Role role) {
+    this.role = role;
+}
+//
+//    public void setRole(String role) {
+//        this.role = new Types.Role(role);
+//    }
 
     @Column(name = "passport_data")
     @Type(type = "text")

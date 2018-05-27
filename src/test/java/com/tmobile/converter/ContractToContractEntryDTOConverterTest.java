@@ -4,6 +4,7 @@ import com.tmobile.dto.ContractsListEntryDTO;
 import com.tmobile.entity.Contract;
 import com.tmobile.entity.Tariff;
 import com.tmobile.entity.User;
+import com.tmobile.util.Types;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class ContractToContractEntryDTOConverterTest {
         customer.setLastName(LAST_NAME);
         customer.setEmail(EMAIL);
         contract.setCustomer(customer);
-        contract.setBlocked(Contract.eBlocked.NOT_BLOCKED);
+        contract.setBlocked(Types.ContractBlocked.UNBLOCKED);
         contract.setPhone(PHONE);
         Tariff tariff = new Tariff();
         tariff.setName(TARIFF);

@@ -4,6 +4,8 @@
 
 <!-- Custom styles for this template -->
 <!--<link href="form-validation.css" rel="stylesheet">-->
+<jstl:url var="requiredURL" value="/options/required"/>
+
 
 <jstl:if test="${page == 'TARIFF'}">
     <jstl:set var="buttonName" value="Save"/>
@@ -22,8 +24,7 @@
 
 </div>
 
-<%--<form method="POST" onsubmit="javascript:void(0);" id="contractData" class="needs-validation" novalidate>--%>
-<%--<form method="POST" action="<jstl:url value="/manager/options"/>" id="optionData" class="needs-validation" novalidate>--%>
+
 <form action="<jstl:url value="/tariffs"/>" id="tariffData" class="needs-validation" method="${saveRequestType}" novalidate>
     <input type="hidden" name="id" value="${tariff.id}"/>
 
@@ -122,25 +123,53 @@ form.classList.add('was-validated');
 <script>
 
     // TODO: polling for new options (TSD)
+    optionsCheckboxes = $('#compatibleOptions :input')
+    optionsCheckboxes.change(function() {
+        // checkedOptionsElements = $('#compatibleOptions :input:checked')
+        checkedOptionsElements = optionsCheckboxes.filter(':checked')
+
+        if(checkedOptionsElements.length == 0) {
+            return;
+        }
+
+        checkedCompatibleOptions = []
+        checkedOptionsElements.not(':disabled').each(function(idx, checkbox) {
+            checkedCompatibleOptions.push($(checkbox).val())
+        })
+
+        if(checkedCompatibleOptions.length == 0) {
+            checkedOptionsElements.filter(':disabled').prop('disabled', false).prop('checked', false)
+            return
+        }
+
+        data = {'optionsIds' : checkedCompatibleOptions.join(',')}
+
+        callREST('${requiredURL}', 'GET', data, function(responseData, status, xhr) {
+
+            checkedOptionsElements.filter(':disabled').prop('disabled', false).prop('checked', false)
+
+            responseData.forEach(function(option) {
+                requiredOptionEl = optionsCheckboxes.not(':checked').filter('#checkboxcompatibleOption' + option.id)
+                requiredOptionEl.prop('disabled', true)
+                requiredOptionEl.prop('checked', true)
+            })
+        })
+    })
+
+    // }
 
     function saveTariff() {
+        // to allow serializeObject()
+        $('#compatibleOptions :input:checked').prop('disabled', false)
+
         form = $('#tariffData')
         formData = form.serializeObject()
         formData = JSON.stringify(formData)
         console.log('Tariff data: ' + formData)
         console.log('URL: ' + form.attr('action'))
 
-        $.ajax({
-            method : form.attr('method'),
-            url: form.attr('action'),
-            dataType: 'json',
-            data : formData,
-
-            contentType : 'application/json; charset=UTF-8',
-            success: function(status, data) {
-                console.log('response status: ' + status)
-                console.log('response data: ' + data)
-            }
+        callREST(form.attr('action'), form.attr('method'), formData, function() {
+            window.location.reload();
         })
     }
 

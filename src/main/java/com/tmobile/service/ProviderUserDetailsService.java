@@ -2,13 +2,13 @@ package com.tmobile.service;
 
 import javax.transaction.Transactional;
 
+import com.tmobile.auth.TMobileUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.tmobile.auth.ProviderUserDetails;
 import com.tmobile.dao.UserDAO;
 import com.tmobile.entity.User;
 
@@ -37,6 +37,6 @@ public class ProviderUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException(email);
         }
 
-        return new ProviderUserDetails(user);
+        return new TMobileUserDetails(user);
     }
 }	

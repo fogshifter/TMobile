@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class TMobileExceptionHandler {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(EntryNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(TMobileException.class)
     public StatusDTO handleEntryNotFound(TMobileException e) {
         return new StatusDTO(StatusDTO.StatusCode.ERROR, e.getMessage());
     }

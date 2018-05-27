@@ -36,7 +36,9 @@ function callREST(url, method, jsonData, clb) {
         success: function(data, status, xhr) {
             console.log('response status: ' + status)
             console.log('response data: ' + data)
-            clb(data, status, xhr)
+            if(clb) {
+                clb(data, status, xhr)
+            }
         }
     })
 }

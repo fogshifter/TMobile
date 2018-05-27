@@ -47,21 +47,6 @@ public class TariffService {
         return modelMapper.map(tariffs, targetListType);
     }
 
-    // TODO : use validation to check for not empty tariff in new/edit contract
-    /*@Transactional
-    public List<OptionDTO> getCompatibleOptions() {
-
-        Tariff defaultTariff = tariffDAO.getDefaultTariff();
-
-        if (defaultTariff == null) {
-            return new ArrayList<OptionDTO>();
-        }
-
-        Type targetListType = new TypeToken<List<OptionDTO>>() {
-        }.getType();
-        return modelMapper.map(defaultTariff.getCompatibleOptions(), targetListType);
-    }*/
-
     @Transactional
     public List<OptionDTO> getCompatibleOptions(int tariffId) throws EntryNotFoundException {
 

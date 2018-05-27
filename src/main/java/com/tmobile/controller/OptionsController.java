@@ -31,16 +31,9 @@ public class OptionsController {
         return service.getAll();
     }
 
-//    @DeleteMapping("/{optionId}")
-//    public StatusDTO removeTariffs(@PathVariable int optionId) throws EntryNotFoundException {
     @DeleteMapping
-//    @ResponseStatus(value = HttpStatus.OK)
-//    public void removeTariffs(@RequestParam("optionsIds") List<Integer> optionsIds) throws EntryNotFoundException {
     public HttpStatus remove(@RequestBody List<Integer> optionsIds) throws EntryNotFoundException {
         service.removeOptions(optionsIds);
-//        service.removeOption(optionId);
-        // return success status
-//        return new StatusDTO();
         return HttpStatus.OK;
     }
 
@@ -52,34 +45,31 @@ public class OptionsController {
     }
 
     @PostMapping
-//    public void createOption(OptionDTO option, List<Integer> compatibleOptions, List<Integer> requiredOptions) throws TMobileException {
     public HttpStatus createOption(@RequestBody OptionDTO option) throws TMobileException {
         service.createOption(option);
         return HttpStatus.OK;
     }
 
     @PutMapping
-//    public void updateOption(OptionDTO option, List<Integer> compatibleOptions, List<Integer> requiredOptions) throws TMobileException {
     public HttpStatus updateOption(@RequestBody OptionDTO option) throws TMobileException {
 
-//        service.updateOption(option, compatibleOptions, requiredOptions);
         service.updateOption(option);
         return HttpStatus.OK;
     }
 
     @GetMapping("/compatible")
-    public List<OptionDTO> getCompatibleOptions(@RequestParam("requiredOptions") List<Integer> requiredOptions) {
-//    public List<OptionDTO> getCompatibleOptions(@RequestBody List<Integer> requiredOptions) {
+    public List<OptionDTO> getCompatibleOptions(@RequestParam("requiredOptions") List<Integer> requiredOptions) throws TMobileException {
+
         return service.getCompatibleOptions(requiredOptions);
     }
 
     @GetMapping("/required")
-    public List<OptionDTO> getRequredOptions(@RequestParam("optionsIds") List<Integer> optionsIds) {
+    public List<OptionDTO> getRequiredOptions(@RequestParam("optionsIds") List<Integer> optionsIds) throws TMobileException {
         return service.getRequiredOptions(optionsIds);
     }
 
     @GetMapping("/restrictions")
-    public Map<String, Set<OptionDTO>> getRequiredOptionsRestrictions(@RequestParam("requiredOptions") List<Integer> requiredOptionsIds) {
+    public Map<String, Set<OptionDTO>> getRequiredOptionsRestrictions(@RequestParam("requiredOptions") List<Integer> requiredOptionsIds) throws TMobileException {
         return service.getRequiredOptionsRestrictions(requiredOptionsIds);
     }
 }

@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.tmobile.util.Types;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.tmobile.entity.User;
 
-public class ProviderUserDetails implements UserDetails {
+public class TMobileUserDetails implements UserDetails {
 
     //	private Customer customer;
     private User user;
 
-    //	public ProviderUserDetails(Customer customer) {
-    public ProviderUserDetails(User user) {
+    //	public TMobileUserDetails(Customer customer) {
+    public TMobileUserDetails(User user) {
 //		this.customer = customer;
         this.user = user;
     }
@@ -25,7 +26,7 @@ public class ProviderUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(user.getRole()));
+        roles.add(new SimpleGrantedAuthority(user.getRole().toString()));
 //		roles.add(new SimpleGrantedAuthority("ROLE_USER"));
         return roles;
     }
@@ -62,5 +63,9 @@ public class ProviderUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Types.Role getRole() {
+        return user.getRole();
     }
 }

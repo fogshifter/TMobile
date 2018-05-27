@@ -1,5 +1,8 @@
 package com.tmobile.dto;
 
+import com.tmobile.util.Types;
+import org.modelmapper.internal.TypeMapStore;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +22,7 @@ public class ContractInfoDTO {
     private String password;
     private String passportData;
     private int blocked;
+//    private Types.ContractBlocked blocked;
     private List<Integer> optionIds = new ArrayList<>();
 
     public ContractInfoDTO() {
@@ -127,10 +131,17 @@ public class ContractInfoDTO {
     public int getBlocked() {
         return this.blocked;
     }
+//    public Types.ContractBlocked getBlocked() {
+//    return this.blocked;
+//}
 
     public void setBlocked(int blocked) {
         this.blocked = blocked;
     }
+//    public void setBlocked(Types.ContractBlocked blocked) {
+//    this.blocked = blocked;
+//}
+
 
     @Override
     public boolean equals(Object o) {
