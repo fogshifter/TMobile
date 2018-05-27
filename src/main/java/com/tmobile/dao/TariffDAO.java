@@ -10,11 +10,6 @@ import java.util.stream.Collectors;
 @Repository
 public class TariffDAO extends GenericDAO<Tariff> {
 
-    @Override
-    public List<Tariff> getAll() {
-        return entityManager.createQuery("select t from Tariff t").getResultList();
-    }
-
     public Tariff getDefaultTariff() {
         List<Tariff> tariffs = entityManager.createQuery("select t from Tariff t where t.defaultTariff=true").getResultList();
 
@@ -23,10 +18,6 @@ public class TariffDAO extends GenericDAO<Tariff> {
         }
 
         return tariffs.get(0);
-    }
-
-    public Tariff find(int id) {
-        return entityManager.find(Tariff.class, id);
     }
 
     public List<Tariff> getByIds(List<Integer> tariffsIds) {

@@ -99,10 +99,10 @@ public class ContractService {
         contract.setPhone(contractInfo.getPhone());
 
         int tariffId = contractInfo.getTariffId();
-        contract.setTariff(tariffDAO.find(tariffId));
+        contract.setTariff(tariffDAO.findById(tariffId, Tariff.class));
 
         for (Integer optionId : contractInfo.getOptionIds()) {
-            contract.addOption(optionDAO.find(optionId));
+            contract.addOption(optionDAO.findById(optionId, Option.class));
         }
 //        user.addContract(contract);
         contract.setCustomer(user);
@@ -127,7 +127,7 @@ public class ContractService {
 
         TMobileUserDetails userDetails = (TMobileUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Contract contract = contractDAO.findById(contractInfo.getContractId());
+        Contract contract = contractDAO.findById(contractInfo.getContractId(), Contract.class);
 
         if(contract == null) {
             throw new EntryNotFoundException("Contract not found");
@@ -141,7 +141,7 @@ public class ContractService {
             throw new InconsistentDataException("Contract is blocked");
         }
 
-        Tariff tariff = tariffDAO.find(contractInfo.getTariffId());
+        Tariff tariff = tariffDAO.findById(contractInfo.getTariffId(), Tariff.class);
 
         if(tariff == null) {
             throw new EntryNotFoundException("Tariff not found");
@@ -189,7 +189,7 @@ public class ContractService {
 
     @Transactional
     public List<ContractsListEntryDTO> getAllContracts() {
-        List<Contract> contracts = contractDAO.getAll();
+        List<Contract> contracts = contractDAO.getAll(Contract.class);
 
         Type targetListType = new TypeToken<List<ContractsListEntryDTO>>() {
         }.getType();
@@ -220,7 +220,7 @@ public class ContractService {
     @Transactional
     public ContractInfoDTO getContract(int id) throws TMobileException {
 
-        Contract contract = contractDAO.findById(id);
+        Contract contract = contractDAO.findById(id, Contract.class);
         if(contract == null) {
             throw new EntryNotFoundException("Contract not found");
         }
@@ -234,7 +234,7 @@ public class ContractService {
 
     @Transactional
     public void blockContract(int id, boolean block) throws TMobileException {
-        Contract contract = contractDAO.findById(id);
+        Contract contract = contractDAO.findById(id, Contract.class);
 
         if(contract == null) {
             throw new EntityNotFoundException("Contract not found");

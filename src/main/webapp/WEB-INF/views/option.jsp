@@ -7,6 +7,7 @@
 
 <jstl:url var="compatibleOptionsURL" value="/options/compatible"/>
 <jstl:url var="requiredOptionsURL" value="/options/required"/>
+<jstl:url var="redirectURL" value="/manager/options"/>
 
 <jstl:url var="requiredOpsRestrictionsURL" value="/options/restrictions"/>
 <jstl:url var="allOptionsURL" value="/options"/>
@@ -334,7 +335,7 @@
 
         var url = '${saveRequestURL}'
         callREST(url, '${saveRequestType}', JSON.stringify(form), function (responseData, status, xhr) {
-            // window
+            window.location.href = '${redirectURL}'
         })
 
     }

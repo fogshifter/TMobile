@@ -181,7 +181,7 @@ public class Option {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Option)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Option option = (Option) o;
         return id == option.id &&
                 payment == option.payment &&
@@ -192,13 +192,14 @@ public class Option {
                 Objects.equals(compatibleTariffs, option.compatibleTariffs) &&
                 Objects.equals(compatibleOptions, option.compatibleOptions) &&
                 Objects.equals(requiredOptions, option.requiredOptions) &&
-                Objects.equals(optionContracts, option.optionContracts);
+                Objects.equals(optionContracts, option.optionContracts) &&
+                Objects.equals(compatibleByOptions, option.compatibleByOptions) &&
+                Objects.equals(requiredByOptions, option.requiredByOptions);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, payment, price, name, description, compatible, compatibleTariffs,
-                compatibleOptions, requiredOptions, optionContracts);
+        return Objects.hash(id, payment, price, name, description, compatible, compatibleTariffs, compatibleOptions, requiredOptions, optionContracts, compatibleByOptions, requiredByOptions);
     }
 }

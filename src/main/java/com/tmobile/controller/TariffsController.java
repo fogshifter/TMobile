@@ -34,7 +34,7 @@ public class TariffsController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("/{tariffId")
+    @GetMapping("/{tariffId}")
     public TariffDTO getTariff(@PathVariable int tariffId) throws TMobileException {
 
         TariffDTO tariff = service.getTariff(tariffId);

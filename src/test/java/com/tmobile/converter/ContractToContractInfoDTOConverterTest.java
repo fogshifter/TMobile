@@ -16,7 +16,7 @@ import java.util.Date;
 public class ContractToContractInfoDTOConverterTest {
 
     private ContractToContractInfoDTOConverter converter = new ContractToContractInfoDTOConverter();
-    private static final DateFormat df = new SimpleDateFormat("dd.mm.yyyy");
+    private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     private final String ADDRESS = "Address";
     private final Date BIRTH_DATE = new Date();
     private final String EMAIL = "Email";

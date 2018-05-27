@@ -10,6 +10,7 @@ services:
       - t-activemq
     volumes:
       - ./target/TMobile-0.5-SNAPSHOT.war:/usr/local/tomcat/webapps/TMobile.war
+      - ../target/log/tmobile:/usr/local/tomcat/logs/tmobile
     networks:
       - t_network
 

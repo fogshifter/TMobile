@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.transaction.Transactional;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { HibernateConfig.class })
+@TestPropertySource("classpath:application.properties")
 @Transactional
 public class ContractDaoTest {
 
@@ -30,17 +32,31 @@ public class ContractDaoTest {
     public void findById() {
         Contract contract = new Contract();
         dao.insert(contract);
-        Contract result = dao.findById(1);
+        Contract result = dao.findById(contract.getId(), Contract.class);
+        System.out.println(dao.getAll(Contract.class).get(0).getId());
         Assert.assertEquals(contract, result);
     }
 
     @Test
+    public void findByPhone() {
+        Contract contract1 = new Contract();
+        contract1.setPhone(PHONE);
+        dao.insert(contract1);
+        Contract contract2 = new Contract();
+        contract2.setPhone(PHONE);
+        dao.insert(contract2);
+        Assert.assertArrayEquals(Arrays.asList(contract1, contract2).toArray(),
+                dao.findByPhone(PHONE).toArray());
+    }
+
+    @Test
     public void getAll() {
-        Contract firstContract = new Contract();
-        Contract secondContract = new Contract();
-        dao.insert(firstContract);
-        dao.insert(secondContract);
-        Assert.assertArrayEquals(Arrays.asList(firstContract, secondContract).toArray(), dao.getAll().toArray());
+        Contract contract1 = new Contract();
+        Contract contract2 = new Contract();
+        dao.insert(contract1);
+        dao.insert(contract2);
+        Assert.assertArrayEquals(Arrays.asList(contract1, contract2).toArray(),
+                dao.getAll(Contract.class).toArray());
 
     }
 
@@ -59,24 +75,31 @@ public class ContractDaoTest {
     }
 
     @Test
-    public void findByPhone() {
-        Contract contract1 = new Contract();
-        contract1.setPhone(PHONE);
-        dao.insert(contract1);
-        Contract contract2 = new Contract();
-        contract2.setPhone(PHONE);
-        dao.insert(contract2);
-        Assert.assertArrayEquals(Arrays.asList(contract1, contract2).toArray(),
-                dao.findByPhone(PHONE).toArray());
-    }
-
-    @Test
     public void getLast() {
         Contract firstContract = new Contract();
         Contract secondContract = new Contract();
         dao.insert(firstContract);
         dao.insert(secondContract);
         Assert.assertEquals(secondContract, dao.getLast());
+    }
+
+    @Test
+    public void remove() {
+        Contract contract = new Contract();
+        dao.insert(contract);
+        dao.remove(contract);
+        Contract result = dao.findById(contract.getId(), Contract.class);
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public void update() {
+        Contract contract = new Contract();
+        dao.insert(contract);
+        Contract result = dao.findById(contract.getId(), Contract.class);
+        result.setPhone("77777777777");
+        dao.update(contract);
+        Assert.assertEquals(result, dao.findByPhone("77777777777").get(0));
     }
 
 }

@@ -10,14 +10,12 @@ import com.tmobile.exception.TMobileException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OptionsService {
@@ -47,7 +45,7 @@ public class OptionsService {
     }
 
     private List<Option> getCompatible(Collection<Option> options) {
-        List<Option> resultList = optionDAO.getAll();
+        List<Option> resultList = optionDAO.getAll(Option.class);
         resultList.removeAll(options);
 
         for(Option option : options) {
@@ -156,7 +154,7 @@ public class OptionsService {
     @Transactional
     public OptionDTO getOption(int optionId) throws EntryNotFoundException {
 
-        Option option = optionDAO.find(optionId);
+        Option option = optionDAO.findById(optionId, Option.class);
         if(option == null) {
             throw new EntryNotFoundException("Option not found");
         }
@@ -167,7 +165,7 @@ public class OptionsService {
     @Transactional
     public List<OptionDTO> getAll() {
 
-        List<Option> options = optionDAO.getAll();
+        List<Option> options = optionDAO.getAll(Option.class);
 
         Type targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
         return modelMapper.map(options, targetListType);
@@ -176,7 +174,7 @@ public class OptionsService {
     @Transactional
 //    public void updateOption(OptionDTO optionDTO, List<Integer> compatibleOptions, List<Integer> requiredOptions) throws TMobileException {
     public void updateOption(OptionDTO optionDTO) throws TMobileException {
-        Option option = optionDAO.find(optionDTO.getId());
+        Option option = optionDAO.findById(optionDTO.getId(), Option.class);
 
         if(option == null) {
             throw new EntryNotFoundException("Option not found");
@@ -200,7 +198,7 @@ public class OptionsService {
 
 //    @Transactional
 //    public void removeOption(int id) throws EntryNotFoundException {
-//        Option option = optionDAO.find(id);
+//        Option option = optionDAO.findById(id);
 //
 //        if(option == null) {
 //            throw new EntryNotFoundException("Option not found");
@@ -236,7 +234,8 @@ public class OptionsService {
 
     @Transactional
     public List<OptionDTO> getCompatibleOptions(int id) throws EntryNotFoundException {
-        Option option = optionDAO.find(id);
+
+        Option option = optionDAO.findById(id, Option.class);
 
         if(option == null) {
             throw new EntryNotFoundException("Option not found");
@@ -254,7 +253,7 @@ public class OptionsService {
 
     @Transactional
     public List<OptionDTO> getRequiredOptions(int id) throws EntryNotFoundException {
-        Option option = optionDAO.find(id);
+        Option option = optionDAO.findById(id, Option.class);
 
         if(option == null) {
             throw new EntryNotFoundException("option not found");
@@ -342,8 +341,8 @@ public class OptionsService {
     /* @Transactional
     public void createOption() {
 
-        Option cOpt = optionDAO.find(1);
-        Option cOpt1 = optionDAO.find(2);
+        Option cOpt = optionDAO.findById(1);
+        Option cOpt1 = optionDAO.findById(2);
 
         Option option = new Option();
 

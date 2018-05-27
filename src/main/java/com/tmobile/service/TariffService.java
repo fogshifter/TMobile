@@ -40,7 +40,7 @@ public class TariffService {
 
     @Transactional
     public List<TariffsListEntryDTO> getAll() {
-        List<Tariff> tariffs = tariffDAO.getAll();
+        List<Tariff> tariffs = tariffDAO.getAll(Tariff.class);
 
         Type targetListType = new TypeToken<List<TariffsListEntryDTO>>() {
         }.getType();
@@ -50,7 +50,7 @@ public class TariffService {
     @Transactional
     public List<OptionDTO> getCompatibleOptions(int tariffId) throws EntryNotFoundException {
 
-        Tariff tariff = tariffDAO.find(tariffId);
+        Tariff tariff = tariffDAO.findById(tariffId, Tariff.class);
 
         if(tariff == null) {
             throw new EntryNotFoundException("Tariff not found");
@@ -63,7 +63,7 @@ public class TariffService {
 
     @Transactional
     public TariffDTO getTariff(int id) throws EntryNotFoundException {
-        Tariff tariff = tariffDAO.find(id);
+        Tariff tariff = tariffDAO.findById(id, Tariff.class);
 
         if(tariff == null) {
             throw new EntryNotFoundException("Tariff not found");
@@ -75,7 +75,7 @@ public class TariffService {
     @Transactional
 //    public void removeTariff(int id) throws EntryNotFoundException {
     public void removeTariffs(List<Integer> tariffsIds) throws EntryNotFoundException {
-//        Tariff tariff = tariffDAO.find(id);
+//        Tariff tariff = tariffDAO.findById(id);
 
         List<Tariff> tariffs = tariffDAO.getByIds(tariffsIds);
 
@@ -124,7 +124,7 @@ public class TariffService {
     @Transactional
     public void updateTariff(TariffDTO tariffDTO) throws EntryNotFoundException {
 
-        Tariff tariff = tariffDAO.find(tariffDTO.getId());
+        Tariff tariff = tariffDAO.findById(tariffDTO.getId(), Tariff.class);
 
         if(tariff == null) {
             throw new EntryNotFoundException("Tariff not found");

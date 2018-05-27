@@ -25,10 +25,6 @@ public class OptionDTO {
         compatibleOptions = optionsIds;
     }
 
-    public void addCompatibleOption(int id) {
-        compatibleOptions.add(id);
-    }
-
     public List<Integer> getRequiredOptions() {
         return requiredOptions;
     }
@@ -37,9 +33,6 @@ public class OptionDTO {
         requiredOptions = optionsIds;
     }
 
-    public void addRequiredOptions(int id) {
-        requiredOptions.add(id);
-    }
 //    List<OptionDTO> requiredOptions = new ArrayList<>();
 
 //    public List<OptionDTO> getRequiredOptions() {

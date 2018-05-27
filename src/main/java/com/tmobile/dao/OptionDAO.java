@@ -10,23 +10,14 @@ import java.util.stream.Collectors;
 @Repository
 public class OptionDAO extends GenericDAO<Option> {
 
-    @Override
-    public List<Option> getAll() {
-        return entityManager.createQuery("select o from Option o").getResultList();
-    }
-
-    public Option find(int id) {
-        return entityManager.find(Option.class, id);
-    }
-
     public List<Option> getByIds(List<Integer> optionIds) {
-        return entityManager.createQuery("select o from Option o where o.id in :ids").setParameter("ids", optionIds).getResultList();
+        return entityManager.createQuery("select o from Option o where o.id in :ids")
+                .setParameter("ids", optionIds).getResultList();
     }
 
     public void remove(List<Option> options) {
-
         List<Integer> optionsIds = options.stream().map(opt-> opt.getId()).collect(Collectors.toList());
-
-        entityManager.createQuery("delete from Option o where o.id in :ids").setParameter("ids", optionsIds).executeUpdate();
+        entityManager.createQuery("delete from Option o where o.id in :ids")
+                .setParameter("ids", optionsIds).executeUpdate();
     }
 }

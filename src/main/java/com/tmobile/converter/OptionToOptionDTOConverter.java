@@ -17,11 +17,11 @@ public class OptionToOptionDTOConverter extends AbstractConverter<Option, Option
         optionDTO.setCompatible(option.isCompatible());
 
         for(Option compatibleOption : option.getCompatibleOptions()) {
-            optionDTO.addCompatibleOption(compatibleOption.getId());
+            optionDTO.getCompatibleOptions().add(compatibleOption.getId());
         }
 
         for(Option requiredOption : option.getRequiredOptions()) {
-            optionDTO.addRequiredOptions(requiredOption.getId());
+            optionDTO.getCompatibleOptions().add(requiredOption.getId());
         }
 
         return optionDTO;

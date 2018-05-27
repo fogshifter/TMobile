@@ -2,10 +2,7 @@ package com.tmobile.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-//import javax.persistence.Query;
-
 import java.util.List;
-
 
 public abstract class GenericDAO<T> {
 
@@ -24,19 +21,12 @@ public abstract class GenericDAO<T> {
         entityManager.remove(entity);
     }
 	
-	/*public T find(int id) {
-//		entityManager.
-//		return entityManager.find(entityClass, primaryKey)
-	}*/
+	public T findById(int id, Class<T> tClass) {
+		return entityManager.find(tClass, id);
+	}
 
-    public abstract List<T> getAll();
-	/*public List<T> getAll() {
-		Query query = entityManager.createQuery("select c from " + T.getSimpleClassName() + "");
-		
-		return query.getResultList();
-		
-//		ArrayList<T> list = new ArrayList<T>();
-	}*/
-
-//	public 
+    public List<T> getAll(Class<T> tClass) {
+		return entityManager.createQuery("select c from " + tClass.getSimpleName() + " c")
+                .getResultList();
+	}
 }
