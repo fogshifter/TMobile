@@ -3,6 +3,7 @@ package com.tmobile.dao;
 import com.tmobile.config.HibernateConfig;
 import com.tmobile.entity.Contract;
 import com.tmobile.entity.User;
+import com.tmobile.exception.EntryNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +30,7 @@ public class ContractDaoTest {
     private UserDAO userDAO;
 
     @Test
-    public void findById() {
+    public void findById() throws EntryNotFoundException {
         Contract contract = new Contract();
         dao.insert(contract);
         Contract result = dao.findById(contract.getId(), Contract.class);
@@ -84,7 +85,7 @@ public class ContractDaoTest {
     }
 
     @Test
-    public void remove() {
+    public void remove() throws EntryNotFoundException {
         Contract contract = new Contract();
         dao.insert(contract);
         dao.remove(contract);
@@ -93,7 +94,7 @@ public class ContractDaoTest {
     }
 
     @Test
-    public void update() {
+    public void update() throws EntryNotFoundException {
         Contract contract = new Contract();
         dao.insert(contract);
         Contract result = dao.findById(contract.getId(), Contract.class);

@@ -10,7 +10,7 @@ public class OptionDTO {
     private int price;
     private String description;
     private String name;
-    boolean compatible;
+    boolean compatible = true;
 
 
 //    boolean required;//

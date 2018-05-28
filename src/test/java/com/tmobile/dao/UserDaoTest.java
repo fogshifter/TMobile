@@ -2,6 +2,7 @@ package com.tmobile.dao;
 
 import com.tmobile.config.HibernateConfig;
 import com.tmobile.entity.User;
+import com.tmobile.exception.EntryNotFoundException;
 import com.tmobile.util.Types;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class UserDaoTest {
     }
 
     @Test
-    public void findId() {
+    public void findId() throws EntryNotFoundException {
         User user1 = new User();
         user1.setFirstName(NAME);
         dao.insert(user1);

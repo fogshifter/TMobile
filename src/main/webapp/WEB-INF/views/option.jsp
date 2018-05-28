@@ -21,7 +21,7 @@
     <jstl:url value="/options" var="saveRequestURL"/>
 
     <jstl:if test="${!option.compatible}">
-        <jstl:set var="compatibleToAll" value=""/>
+        <jstl:set var="compatibleToAll" value="false"/>
         <jstl:set value="Partial Compatibility" var="compatToAllBtnText"/>
     </jstl:if>
 </jstl:if>
@@ -80,10 +80,10 @@
             <div class="tab-content pre-scrollable" id="compatibleOptions">
                 <%--<div class="tab-pane fade active show" id="compatible">--%>
 
-                    <jstl:forEach var="compatibleOption" items="${allOptions}">
+                    <jstl:forEach var="compatibleOption" items="${compatibleOptions}">
                         <jstl:set var="compatibleOptionsAttr" value=""/>
                         <jstl:if test="${option.compatible}">
-                            <jstl:set var="compatibleOpticmonsAttr" value="checked"/>
+                            <jstl:set var="compatibleOptionsAttr" value="checked"/>
                         </jstl:if>
                         <jstl:forEach var="compatOpId" items="${option.compatibleOptions}">
                             <jstl:if test="${compatibleOption.id == compatOpId}">
@@ -112,13 +112,27 @@
             <%--<div class="tab-content pre-scrollable" style="height: 313px">--%>
             <div class="tab-content pre-scrollable" id="requiredOptions">
                 <%--<div class="tab-pane fade active show" id="compatible">--%>
-                <jstl:forEach var="compatibleOption" items="${allOptions}">
+                <jstl:forEach var="requiredOption" items="${requiredOptions}">
+                    <jstl:import url="option_card.jsp">
+                        <jstl:param name="optionCardId" value="requiredOption${requiredOption.id}" />
+                        <jstl:param name="optionCardHeadId" value="requiredOptionHead${requiredOption.id}" />
+                        <jstl:param name="cardOptionId" value="${requiredOption.id}" />
+                        <jstl:param name="cardOptionName" value="${requiredOption.name}" />
+                        <jstl:param name="cardOptionDescription" value="${requiredOption.description}" />
+                        <jstl:param name="cardOptionPrice" value="${requiredOption.price}" />
+                        <jstl:param name="cardOptionPayment" value="${requiredOption.payment}" />
+                        <jstl:param name="optionInputName" value="requiredOptions" />
+                        <jstl:param name="optionCardAttrs" value="checked" />
+                    </jstl:import>
+                </jstl:forEach>
 
-                    <jstl:forEach var="requiredOption" items="${requiredOptions}">
-                        <jstl:if test="${optionCard == requiredOption}">
-                            <jstl:set var="optionCardAttrs" value="checked"/>
-                        </jstl:if>
-                    </jstl:forEach>
+                <jstl:forEach var="compatibleOption" items="${compatibleOptions}">
+
+                    <%--<jstl:forEach var="requiredOption" items="${requiredOptions}">--%>
+                        <%--<jstl:if test="${optionCard == requiredOption}">--%>
+                            <%--<jstl:set var="optionCardAttrs" value="checked"/>--%>
+                        <%--</jstl:if>--%>
+                    <%--</jstl:forEach>--%>
 
                     <jstl:import url="option_card.jsp">
                         <jstl:param name="optionCardId" value="requiredOption${compatibleOption.id}" />
@@ -129,7 +143,7 @@
                         <jstl:param name="cardOptionPrice" value="${compatibleOption.price}" />
                         <jstl:param name="cardOptionPayment" value="${compatibleOption.payment}" />
                         <jstl:param name="optionInputName" value="requiredOptions" />
-                        <jstl:param name="optionCardAttrs" value="${optionCardAttrs}" />
+                        <jstl:param name="optionCardAttrs" value="" />
                     </jstl:import>
                 </jstl:forEach>
                 <%--</div>--%>

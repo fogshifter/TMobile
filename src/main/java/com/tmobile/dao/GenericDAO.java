@@ -1,5 +1,7 @@
 package com.tmobile.dao;
 
+import com.tmobile.exception.EntryNotFoundException;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -21,8 +23,13 @@ public abstract class GenericDAO<T> {
         entityManager.remove(entity);
     }
 	
-	public T findById(int id, Class<T> tClass) {
-		return entityManager.find(tClass, id);
+	public T findById(int id, Class<T> tClass) throws EntryNotFoundException {
+		T entity = entityManager.find(tClass, id);
+		if(entity == null) {
+		    throw new EntryNotFoundException(tClass.getSimpleName() + " not found");
+        }
+
+        return entity;
 	}
 
     public List<T> getAll(Class<T> tClass) {

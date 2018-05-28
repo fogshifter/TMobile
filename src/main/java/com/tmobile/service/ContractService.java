@@ -71,7 +71,7 @@ public class ContractService {
     }
 
     @Transactional
-    public void registerContract(ContractInfoDTO contractInfo) {
+    public void registerContract(ContractInfoDTO contractInfo) throws TMobileException {
         User user = new User();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -89,9 +89,12 @@ public class ContractService {
         user.setPassword(encoder.encode(contractInfo.getPassword()));
         user.setPassportData(contractInfo.getPassportData());
 
-        int existingUserId = userDAO.findId(user);
-        if (existingUserId != 0) {
+        try {
+            int existingUserId = userDAO.findId(user);
             user.setId(existingUserId);
+        }
+        catch(EntryNotFoundException e) {
+
         }
 
 //        Contract contract = mapper.map(contractInfo, Contract.class);
@@ -129,10 +132,6 @@ public class ContractService {
 
         Contract contract = contractDAO.findById(contractInfo.getContractId(), Contract.class);
 
-        if(contract == null) {
-            throw new EntryNotFoundException("Contract not found");
-        }
-
         if(userDetails.getRole() != Types.Role.ROLE_MANAGER && userDetails.getUserId() != contract.getCustomer().getId()) {
             throw new UnauthorizedException("You are unauthorized to do this action");
         }
@@ -143,15 +142,7 @@ public class ContractService {
 
         Tariff tariff = tariffDAO.findById(contractInfo.getTariffId(), Tariff.class);
 
-        if(tariff == null) {
-            throw new EntryNotFoundException("Tariff not found");
-        }
-
         List<Option> options = optionDAO.getByIds(contractInfo.getOptionIds());
-
-        if(options.size() != contractInfo.getOptionIds().size()) {
-            throw new EntryNotFoundException("Tariff option not found");
-        }
 
         if(tariff.getCompatibleOptions().containsAll(options)) {
             throw new InconsistentDataException("Incompatible options for chosen tariff");
@@ -221,9 +212,6 @@ public class ContractService {
     public ContractInfoDTO getContract(int id) throws TMobileException {
 
         Contract contract = contractDAO.findById(id, Contract.class);
-        if(contract == null) {
-            throw new EntryNotFoundException("Contract not found");
-        }
 
         if(!isContractAccessible(contract)) {
             throw new UnauthorizedException("You are not authorized to get user details");
@@ -235,10 +223,6 @@ public class ContractService {
     @Transactional
     public void blockContract(int id, boolean block) throws TMobileException {
         Contract contract = contractDAO.findById(id, Contract.class);
-
-        if(contract == null) {
-            throw new EntityNotFoundException("Contract not found");
-        }
 
         if(!isContractAccessible(contract)) {
             throw new UnauthorizedException("You are unauthorized");

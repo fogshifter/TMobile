@@ -51,7 +51,7 @@ public class ContractsController {
 
     @PostMapping
     @ResponseBody
-    public HttpStatus createContract(@RequestBody ContractInfoDTO contractInfo, HttpSession session) {
+    public HttpStatus createContract(@RequestBody ContractInfoDTO contractInfo, HttpSession session) throws TMobileException {
         contractService.registerContract(contractInfo);
         session.removeAttribute("newContractInfo");
 

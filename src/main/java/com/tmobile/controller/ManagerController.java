@@ -92,38 +92,6 @@ public class ManagerController {
         return view;
     }
 
-//    @PostMapping("/sync_new_contract_info")
-//    @ResponseBody
-//    public List<OptionDTO> syncNewContractInfo(@RequestBody ContractInfoDTO contractInfo, HttpSession session) {
-//        session.setAttribute("newContractInfo", contractInfo);
-//
-//        return tariffService.getCompatibleOptions(contractInfo.getTariffId());
-//    }
-
-//    @PostMapping("/sync_contract_info")
-//    public @ResponseBody
-//    List<OptionDTO> syncContractInfo(@RequestBody ContractInfoDTO contractInfo, HttpSession session) {
-//        session.setAttribute("contractInfo" + String.valueOf(contractInfo.getContractId()), contractInfo);
-//
-//        return tariffService.getCompatibleOptions(contractInfo.getTariffId());
-//    }
-
-//    @PostMapping("/register_contract")
-//    public @ResponseBody
-//    void registerContract(@RequestBody ContractInfoDTO contractInfo, HttpSession session) {
-//        contractService.registerContract(contractInfo);
-//
-//        session.removeAttribute("newContractInfo");
-//    }
-
-//    @PostMapping("/edit_contract")
-//    public @ResponseBody
-//    void editContract(@RequestBody ContractInfoDTO contractInfo, HttpSession session) {
-//        contractService.editContract(contractInfo);
-//        session.removeAttribute("contractInfo" + String.valueOf(contractInfo.getContractId()));
-//    }
-
-
     @GetMapping("/filterByPhone")
     public @ResponseBody
     List<ContractsListEntryDTO> getContractsByPhone(@RequestParam("phone") String phone) {
@@ -144,24 +112,17 @@ public class ManagerController {
     }
 
     @GetMapping("/options/{optionId}")
-    public ModelAndView editOption(@PathVariable int optionId) throws EntryNotFoundException {
+    public ModelAndView editOption(@PathVariable int optionId) throws TMobileException {
 
         OptionDTO option = optionsService.getOption(optionId);
 
-//        List<OptionDTO> compatibleOptions = optionsService.getCompatibleOptions(option.getId());
-//        List<OptionDTO> requiredOptions = optionsService.getRequiredOptions(option.getId());
-//        List<OptionDTO> possibleCompatibleOptions =
+        List<OptionDTO> allCompatibleOptions = optionsService.getCompatibleOptions(option.getId());
 
         ModelAndView view = new ModelAndView("control_template");
-//        view.addObject("user", "MANAGER");
         view.addObject("page", "OPTION");
         view.addObject("option", option);
-        view.addObject("allOptions", optionsService.getAll());
-//        view.addObject("options", optionsService.getAll());
-//        view.addObject("compatibleOptions", optionDTO);
-
-//        view.addObject("compatibleOptions", compatibleOptions);
-//        view.addObject("requiredOptions", requiredOptions);
+        view.addObject("compatibleOptions", allCompatibleOptions);
+        view.addObject("requiredOptions", optionsService.getRequiredOptions(optionId));
 
         return view;
     }
@@ -173,7 +134,7 @@ public class ManagerController {
         view.addObject("page", "NEW_OPTION");
         view.addObject("option", new OptionDTO());
 //        view.addObject("compatibleOptions", optionsService.getAll());
-        view.addObject("allOptions", optionsService.getAll());
+        view.addObject("compatibleOptions", optionsService.getAll());
 
         return view;
     }
@@ -212,6 +173,4 @@ public class ManagerController {
         view.addObject("allOptions", optionsService.getAll());
         return view;
     }
-
-
 }

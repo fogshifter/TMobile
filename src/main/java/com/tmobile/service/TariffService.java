@@ -52,10 +52,6 @@ public class TariffService {
 
         Tariff tariff = tariffDAO.findById(tariffId, Tariff.class);
 
-        if(tariff == null) {
-            throw new EntryNotFoundException("Tariff not found");
-        }
-
         Type targetListType = new TypeToken<List<OptionDTO>>() {
         }.getType();
         return modelMapper.map(tariff.getCompatibleOptions(), targetListType);
@@ -64,10 +60,6 @@ public class TariffService {
     @Transactional
     public TariffDTO getTariff(int id) throws EntryNotFoundException {
         Tariff tariff = tariffDAO.findById(id, Tariff.class);
-
-        if(tariff == null) {
-            throw new EntryNotFoundException("Tariff not found");
-        }
 
         return modelMapper.map(tariff, TariffDTO.class);
     }
@@ -105,9 +97,6 @@ public class TariffService {
 
         List<Integer> compatibleOptionsIds = tariffDTO.getCompatibleOptions();
         List<Option> compatibleOptions = optionDAO.getByIds(tariffDTO.getCompatibleOptions());
-        if(compatibleOptions.size() != compatibleOptionsIds.size()) {
-            throw new EntryNotFoundException("Compatible option not found");
-        }
 
         Tariff tariff = modelMapper.map(tariffDTO, Tariff.class);
 
@@ -126,15 +115,7 @@ public class TariffService {
 
         Tariff tariff = tariffDAO.findById(tariffDTO.getId(), Tariff.class);
 
-        if(tariff == null) {
-            throw new EntryNotFoundException("Tariff not found");
-        }
-
         List<Option> compatibleOptions = optionDAO.getByIds(tariffDTO.getCompatibleOptions());
-
-        if(compatibleOptions.size() != tariffDTO.getCompatibleOptions().size()) {
-            throw new EntryNotFoundException("Compatible option not found");
-        }
 
         tariff.setName(tariffDTO.getName());
         tariff.setDescription(tariffDTO.getDescription());

@@ -2,6 +2,7 @@ package com.tmobile.dao;
 
 import com.tmobile.config.HibernateConfig;
 import com.tmobile.entity.Tariff;
+import com.tmobile.exception.EntryNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ public class TariffDaoTest {
     }
 
     @Test
-    public void remove() {
+    public void remove() throws EntryNotFoundException {
         Tariff tariff1 = new Tariff();
         Tariff tariff2 = new Tariff();
         dao.insert(tariff1);

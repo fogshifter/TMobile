@@ -2,6 +2,7 @@ package com.tmobile.dao;
 
 import com.tmobile.config.HibernateConfig;
 import com.tmobile.entity.Option;
+import com.tmobile.exception.EntryNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,7 @@ public class OptionDaoTest {
     private OptionDAO dao;
 
     @Test
-    public void getByIds() {
+    public void getByIds() throws EntryNotFoundException {
         Option option1 = new Option();
         Option option2 = new Option();
         dao.insert(option1);
@@ -33,7 +34,7 @@ public class OptionDaoTest {
     }
 
     @Test
-    public void remove() {
+    public void remove() throws EntryNotFoundException {
         Option option1 = new Option();
         Option option2 = new Option();
         dao.insert(option1);

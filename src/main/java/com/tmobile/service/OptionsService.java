@@ -71,7 +71,6 @@ public class OptionsService {
         return true;
     }
 
-//    private void fillOption(OptionDTO optionDTO, List<Integer> compatibleOptionsIds, List<Integer> requiredOptionsIds, Option option) throws TMobileException {
     private void fillOption(OptionDTO optionDTO, Option option) throws TMobileException {
 
         option.setDescription(optionDTO.getDescription());
@@ -95,14 +94,15 @@ public class OptionsService {
         List<Option> requiredCompatibleOptions = null;
         if (!requiredOptionsIds.isEmpty()) {
             List<Option> requiredOptions = optionDAO.getByIds(requiredOptionsIds);
-            if (requiredOptions.size() != requiredOptionsIds.size()) {
-                throw new EntryNotFoundException("Required option not found");
-            }
 
             for (Option reqOp : requiredOptions) {
-                boolean dependentRequiredOptionIncluded = reqOp.getRequiredOptions().stream().anyMatch(op -> requiredOptions.contains(op));
-                if (!dependentRequiredOptionIncluded) {
-                    throw new InconsistentDataException("Required options is not included");
+
+                if(!reqOp.getRequiredOptions().isEmpty()) {
+                    boolean dependentRequiredOptionIncluded = reqOp.getRequiredOptions().stream().anyMatch(op -> requiredOptions.contains(op));
+
+                    if (!dependentRequiredOptionIncluded) {
+                        throw new InconsistentDataException("Required options are not included");
+                    }
                 }
             }
 
@@ -129,9 +129,6 @@ public class OptionsService {
 
         if (!compatibleOptionsIds.isEmpty()) {
             List<Option> compatibleOptions = optionDAO.getByIds(compatibleOptionsIds);
-            if (compatibleOptions.size() != compatibleOptionsIds.size()) {
-                throw new EntryNotFoundException("Compatible option not found");
-            }
 
             for (Option compatOption : compatibleOptions) {
 //            if(!compatibleOptions.contains(requiredCompatOption)) {
@@ -155,9 +152,6 @@ public class OptionsService {
     public OptionDTO getOption(int optionId) throws EntryNotFoundException {
 
         Option option = optionDAO.findById(optionId, Option.class);
-        if(option == null) {
-            throw new EntryNotFoundException("Option not found");
-        }
 
         return modelMapper.map(option, OptionDTO.class);
     }
@@ -172,13 +166,8 @@ public class OptionsService {
     }
 
     @Transactional
-//    public void updateOption(OptionDTO optionDTO, List<Integer> compatibleOptions, List<Integer> requiredOptions) throws TMobileException {
     public void updateOption(OptionDTO optionDTO) throws TMobileException {
         Option option = optionDAO.findById(optionDTO.getId(), Option.class);
-
-        if(option == null) {
-            throw new EntryNotFoundException("Option not found");
-        }
 
         fillOption(optionDTO, option);
         optionDAO.update(option);
@@ -196,37 +185,14 @@ public class OptionsService {
         optionDAO.insert(option);
     }
 
-//    @Transactional
-//    public void removeOption(int id) throws EntryNotFoundException {
-//        Option option = optionDAO.findById(id);
-//
-//        if(option == null) {
-//            throw new EntryNotFoundException("Option not found");
-//        }
-//
-//        optionDAO.removeTariffs(option);
-//    }
-
     @Transactional
     public void removeOptions(List<Integer> optionsIds) throws EntryNotFoundException {
         List<Option> options = optionDAO.getByIds(optionsIds);
 
-        if(options.size() != optionsIds.size()) {
-            throw new EntryNotFoundException("Option not found");
-        }
-
         for(Option o : options) {
 
-            for(Option refOption : o.getCompatibleByOptions()) {
-                refOption.removeCompatibleOption(o);
-                optionDAO.update(refOption);
-            }
-
-            for(Option refOption : o.getRequiredByOptions()) {
-                refOption.removeRequiredOption(o);
-                optionDAO.update(refOption);
-            }
-
+            o.setRequiredOptions(null);
+            o.setCompatibleOptions(null);
         }
 
         optionDAO.remove(options);
@@ -237,27 +203,26 @@ public class OptionsService {
 
         Option option = optionDAO.findById(id, Option.class);
 
-        if(option == null) {
-            throw new EntryNotFoundException("Option not found");
+        List<Option> compatibleOptions = null;
+        if(option.isCompatible()) {
+            compatibleOptions = optionDAO.getAll(Option.class);
+        }
+        else if(!option.getRequiredOptions().isEmpty()){
+            compatibleOptions = getCompatible(option.getRequiredOptions());
+        }
+        else {
+            compatibleOptions = option.getCompatibleOptions();
         }
 
-        if(option.isCompatible()) {
-            List<OptionDTO> compatibleOptions = getAll();
-            compatibleOptions.remove(option);
-            return compatibleOptions;
-        }
+        compatibleOptions.remove(option);
 
         Type targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
-        return modelMapper.map(option.getCompatibleOptions(), targetListType);
+        return modelMapper.map(compatibleOptions, targetListType);
     }
 
     @Transactional
     public List<OptionDTO> getRequiredOptions(int id) throws EntryNotFoundException {
         Option option = optionDAO.findById(id, Option.class);
-
-        if(option == null) {
-            throw new EntryNotFoundException("option not found");
-        }
 
         List<Option> requiredOptions = option.getRequiredOptions();
         if(requiredOptions.isEmpty()) {
@@ -265,7 +230,7 @@ public class OptionsService {
         }
 
         Type targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
-        return modelMapper.map(option.getCompatibleOptions(), targetListType);
+        return modelMapper.map(requiredOptions, targetListType);
     }
 
     @Transactional
@@ -273,9 +238,6 @@ public class OptionsService {
         Map<String, Set<OptionDTO>> restrictions = new HashMap<>();
 
         List<Option> requiredOptions = optionDAO.getByIds(requiredOptionsIds);
-        if(requiredOptions.size() != requiredOptionsIds.size()) {
-            throw new EntryNotFoundException("Options not found");
-        }
 
         // Get required options
         Set<Option> reqOptionsWithDeps = new HashSet<>(requiredOptions);
@@ -308,10 +270,6 @@ public class OptionsService {
     public List<OptionDTO> getCompatibleOptions(List<Integer> requiredOptionsIds) throws TMobileException {
         List<Option> requiredOptions = optionDAO.getByIds(requiredOptionsIds);
 
-        if(requiredOptions.size() != requiredOptionsIds.size()) {
-            throw new EntryNotFoundException("Required options not found");
-        }
-
         List<Option> compatibleOptions = getCompatible(requiredOptions);
 
         Type targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
@@ -321,10 +279,6 @@ public class OptionsService {
     @Transactional
     public List<OptionDTO> getRequiredOptions(List<Integer> optionsIds) throws TMobileException {
         List<Option> options = optionDAO.getByIds(optionsIds);
-
-        if(options.size() != optionsIds.size()) {
-            throw new EntryNotFoundException("Options not found");
-        }
 
         Set<Option> resultSet = new HashSet<>();
 
@@ -338,28 +292,4 @@ public class OptionsService {
         Type targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
         return modelMapper.map(resultSet, targetListType);
     }
-    /* @Transactional
-    public void createOption() {
-
-        Option cOpt = optionDAO.findById(1);
-        Option cOpt1 = optionDAO.findById(2);
-
-        Option option = new Option();
-
-        option.setName("test1");
-        option.setDescription("test1 desc");
-
-        CompatibleOptions compatibleOptions = new CompatibleOptions();
-        compatibleOptions.setRequired(true);
-        compatibleOptions.setOption(option);
-        compatibleOptions.setCompatibleOption(cOpt);
-        option.addCompatibleOption(compatibleOptions);
-
-        compatibleOptions = new CompatibleOptions();
-        compatibleOptions.setOption(option);
-        compatibleOptions.setCompatibleOption(cOpt1);
-        option.addCompatibleOption(compatibleOptions);
-
-        optionDAO.insert(option);
-    }*/
 }
