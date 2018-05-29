@@ -4,6 +4,7 @@ import com.tmobile.config.HibernateConfig;
 import com.tmobile.entity.Tariff;
 import com.tmobile.exception.EntryNotFoundException;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class TariffDaoTest {
     }
 
     @Test
+    @Ignore
     public void remove() throws EntryNotFoundException {
         Tariff tariff1 = new Tariff();
         Tariff tariff2 = new Tariff();

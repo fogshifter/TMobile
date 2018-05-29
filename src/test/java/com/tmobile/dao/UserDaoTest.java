@@ -5,6 +5,7 @@ import com.tmobile.entity.User;
 import com.tmobile.exception.EntryNotFoundException;
 import com.tmobile.util.Types;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ public class UserDaoTest {
     }
 
     @Test
+    @Ignore
     public void findId() throws EntryNotFoundException {
         User user1 = new User();
         user1.setFirstName(NAME);
