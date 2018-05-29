@@ -32,16 +32,16 @@ public class TModileLogger {
     @Around("servicePointcut()")
     public void logService(ProceedingJoinPoint pjp) throws Throwable {
         String methodName = MethodSignature.class.cast(pjp.getSignature()).getMethod().getName();
-        log.debug("Start method " + methodName + "with parameters: " + pjp.getArgs());
+        log.info("Start method " + methodName + "with parameters: " + pjp.getArgs());
         Object result = pjp.proceed();
-        log.debug("Stop method " + methodName + "with parameters: " + result);
+        log.info("Stop method " + methodName + "with parameters: " + result);
     }
 
     @Around("controllerPointcut()")
     public void logController(ProceedingJoinPoint pjp) throws Throwable {
         String methodName = MethodSignature.class.cast(pjp.getSignature()).getMethod().getName();
-        log.debug("Request method " + methodName + "with parameters: " + pjp.getArgs());
+        log.info("Request method " + methodName + "with parameters: " + pjp.getArgs());
         Object result = pjp.proceed();
-        log.debug("Response method " + methodName + "with parameters: " + result);
+        log.info("Response method " + methodName + "with parameters: " + result);
     }
 }

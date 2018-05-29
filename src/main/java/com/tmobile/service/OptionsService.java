@@ -22,6 +22,7 @@ public class OptionsService {
 
     private OptionDAO optionDAO;
     private ModelMapper modelMapper;
+    private MessageService messageService;
 
     private boolean isCompatible(Collection<Option> options) {
         for(Option firstOption : options) {
@@ -143,9 +144,10 @@ public class OptionsService {
     }
 
     @Autowired
-    public OptionsService(OptionDAO optionDAO, ModelMapper mapper) {
+    public OptionsService(OptionDAO optionDAO, MessageService messageService, ModelMapper mapper) {
         this.optionDAO = optionDAO;
         this.modelMapper = mapper;
+        this.messageService = messageService;
     }
 
     @Transactional
@@ -171,6 +173,7 @@ public class OptionsService {
 
         fillOption(optionDTO, option);
         optionDAO.update(option);
+        messageService.sendMessage();
     }
 
     @Transactional
@@ -183,6 +186,7 @@ public class OptionsService {
         fillOption(optionDTO, option);
 
         optionDAO.insert(option);
+        messageService.sendMessage();
     }
 
     @Transactional
@@ -196,6 +200,7 @@ public class OptionsService {
         }
 
         optionDAO.remove(options);
+        messageService.sendMessage();
     }
 
     @Transactional

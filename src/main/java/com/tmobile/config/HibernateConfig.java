@@ -41,7 +41,7 @@ public class HibernateConfig {
         factory.setDataSource(dataSource());
         factory.setPackagesToScan(new String[] { "com.tmobile.entity" });
         factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        factory.setPersistenceUnitName("testprovider-pu");
+        factory.setPersistenceUnitName(env.getProperty("persistence.unit"));
         return factory;
     }
 

@@ -144,7 +144,7 @@ public class ContractService {
 
         List<Option> options = optionDAO.getByIds(contractInfo.getOptionIds());
 
-        if(tariff.getCompatibleOptions().containsAll(options)) {
+        if(!tariff.getCompatibleOptions().containsAll(options)) {
             throw new InconsistentDataException("Incompatible options for chosen tariff");
         }
 
