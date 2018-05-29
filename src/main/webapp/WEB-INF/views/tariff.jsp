@@ -5,6 +5,7 @@
 <!-- Custom styles for this template -->
 <!--<link href="form-validation.css" rel="stylesheet">-->
 <jstl:url var="requiredURL" value="/options/required"/>
+<jstl:url var="redirectURL" value="/manager/tariffs"/>
 
 
 <jstl:if test="${page == 'TARIFF'}">
@@ -169,7 +170,8 @@ form.classList.add('was-validated');
         console.log('URL: ' + form.attr('action'))
 
         callREST(form.attr('action'), form.attr('method'), formData, function() {
-            window.location.reload();
+            // window.location.reload();
+            window.location.href = '${redirectURL}'
         })
     }
 

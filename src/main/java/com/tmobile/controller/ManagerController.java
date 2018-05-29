@@ -61,7 +61,11 @@ public class ManagerController {
         List<OptionDTO> options = null;
 
         if (contractInfo != null) {
-            options = tariffService.getCompatibleOptions(contractInfo.getTariffId());
+            try {
+                options = tariffService.getCompatibleOptions(contractInfo.getTariffId());
+            } catch(EntryNotFoundException e) {
+                session.removeAttribute("newContractInfo");
+            }
         }
         else {
             contractInfo = new ContractInfoDTO();

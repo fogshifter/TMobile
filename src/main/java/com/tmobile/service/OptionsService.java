@@ -225,9 +225,6 @@ public class OptionsService {
         Option option = optionDAO.findById(id, Option.class);
 
         List<Option> requiredOptions = option.getRequiredOptions();
-        if(requiredOptions.isEmpty()) {
-            return new ArrayList<>();
-        }
 
         Type targetListType = new TypeToken<List<OptionDTO>>() {}.getType();
         return modelMapper.map(requiredOptions, targetListType);

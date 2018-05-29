@@ -90,11 +90,13 @@
                     <input type="date" class="form-control" id="birthDate" name="birthDate" value="${contractInfo.birthDate}" ${customerInfoEditable}>
                 </div>
             </div>
+                <jstl:if test="${page != 'NEW_CONTRACT'}">
             <div class="form-group row">
                 <label for="phone" class="col-3 col-form-label">Phone</label>
                 <div class="col-9">
                     <input type="text" class="form-control" id="phone" name="phone" value="${contractInfo.phone}" ${customerInfoEditable}>
                 </div>
+                </jstl:if>
             </div>
             <div class="form-group row">
                 <label for="email" class="col-3 col-form-label">Email</label>
